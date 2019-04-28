@@ -1,8 +1,10 @@
-package miracle.field.controller;
+package miracle.field.client.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import miracle.field.client.util.ApplicationContexHolder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,14 +12,16 @@ public class MainController extends AbstractFxmlController {
     @FXML private TextField user;
     @FXML private TextField password;
     @FXML private Button loginButton;
+    private ApplicationContexHolder holder;
 
-    public MainController() {
+    @Autowired
+    public MainController(ApplicationContexHolder holder){
+        this.holder = holder;
     }
-
     @FXML
     public void onClickLoad() {
-        System.out.println(user.getText());
-        System.out.println(password.getText());
-//        TODO login logic
+        System.out.println(getContext());
+        System.out.println(holder);
     }
+
 }

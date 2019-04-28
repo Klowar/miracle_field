@@ -1,19 +1,17 @@
-package miracle.field.app;
+package miracle.field.client.app;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import miracle.field.client.config.Config;
+import miracle.field.client.util.SpringStageLoader;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.io.IOException;
-
 public class Launcher extends Application {
-    private static AnnotationConfigApplicationContext context;
+    private static ApplicationContext context;
+    private SpringStageLoader springStageLoader;
     //   1) Дина Рубина Синдром Питрушки
-//   2) На солнечной стороне улицы
+    //   2) На солнечной стороне улицы
     public static void main(String[] args) {
         launch(args);
     }
@@ -21,19 +19,16 @@ public class Launcher extends Application {
     @Override
     public void init() {
         context = new AnnotationConfigApplicationContext(Config.class);
+        springStageLoader = context.getBean(SpringStageLoader.class);
     }
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass()
-                .getResource("/view/fxml/main.fxml"));
-        stage.setTitle("JavaFX Maven Spring");
-        stage.setScene(new Scene(root));
-        stage.show();
+        springStageLoader.loadMain().show();
     }
 
     @Override
-    public void stop() throws IOException {
-        context.close();
+    public void stop() {
+        context = null;
     }
 }

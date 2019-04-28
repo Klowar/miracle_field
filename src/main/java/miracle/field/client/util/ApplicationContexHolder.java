@@ -1,4 +1,4 @@
-package miracle.field.client.config;
+package miracle.field.client.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -14,7 +14,6 @@ public class ApplicationContexHolder implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        System.out.println(applicationContext);
         this.context = applicationContext;
     }
 

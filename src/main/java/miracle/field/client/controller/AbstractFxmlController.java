@@ -1,10 +1,10 @@
-package miracle.field.controller;
+package miracle.field.client.controller;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class AbstractFxmlController implements ApplicationContextAware {
+abstract class AbstractFxmlController implements ApplicationContextAware {
 
     private ApplicationContext context;
 
@@ -16,5 +16,4 @@ public class AbstractFxmlController implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
     }
-
 }

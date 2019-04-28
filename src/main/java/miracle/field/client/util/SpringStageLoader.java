@@ -1,4 +1,4 @@
-package miracle.field.client.app;
+package miracle.field.client.util;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,9 +7,11 @@ import javafx.stage.Stage;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Component
 public class SpringStageLoader implements ApplicationContextAware {
     private static ApplicationContext staticContext;
     //инъекция заголовка главного окна
@@ -21,10 +23,10 @@ public class SpringStageLoader implements ApplicationContextAware {
 
     private Parent load(String fxmlName) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        // setLocation необходим для корректной загрузки включенных шаблонов, таких как productTable.fxml,
-        // без этого получим исключение javafx.fxml.LoadException: Base location is undefined.
+        // Load templates
         loader.setLocation(SpringStageLoader.class.getResource(FXML_DIR + fxmlName + ".fxml"));
-        // setLocation необходим для корректной того чтобы loader видел наши кастомные котнролы
+        // for custom controller constructors,
+        // by default this tries to create controller empty constructor
         loader.setClassLoader(SpringStageLoader.class.getClassLoader());
         loader.setControllerFactory(staticContext::getBean);
         return loader.load(SpringStageLoader.class.getResourceAsStream(FXML_DIR + fxmlName + ".fxml"));
