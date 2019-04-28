@@ -16,11 +16,11 @@
 </ul>
 
 <h2> BUILD </h2>
-1) Download <a href="https://openjfx.io/">openjfx</a>
-2) Add that library to project
-3) Add config for run app/Launcher
-4) Add VM option : --module-path /PATH/TO/javafx-sdk-12.0.1/lib --add-modules javafx.controls,javafx.fxml
-5) Run
+1) Download <a href="https://openjfx.io/">openjfx</a> <br/>
+2) Add that library to project </br>
+3) Add config for run app/Launcher </br>
+4) Add VM option : --module-path /PATH/TO/javafx-sdk-12.0.1/lib --add-modules javafx.controls,javafx.fxml </br>
+5) Run </br>
 
 
 
