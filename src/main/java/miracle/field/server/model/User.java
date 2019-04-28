@@ -1,4 +1,4 @@
-package miracle.field.model;
+package miracle.field.server.model;
 
 import javax.persistence.*;
 

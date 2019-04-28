@@ -1,6 +1,6 @@
-package miracle.field.repository;
+package miracle.field.server.repository;
 
-import miracle.field.model.User;
+import miracle.field.server.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
