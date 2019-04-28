@@ -13,7 +13,7 @@
         <maven.compiler.source>12</maven.compiler.source>
         <maven.compiler.target>12</maven.compiler.target>
 
-        <spring.version>5.1.5.RELEASE</spring.version>
+        <spring.version>5.1.6.RELEASE</spring.version>
         <spring-data-jpa.version>2.1.4.RELEASE</spring-data-jpa.version>
 
         <hibernate.version>5.4.1.Final</hibernate.version>
@@ -111,7 +111,7 @@
                 <configuration>
                     <release>12</release>
                     <launcher>launcher</launcher>
-                    <mainClass>java-fx/miracle.field.app.Launcher</mainClass>
+                    <mainClass>java-fx/miracle.field.client.app.Launcher</mainClass>
                 </configuration>
             </plugin>
         </plugins>
