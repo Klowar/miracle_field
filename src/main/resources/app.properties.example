@@ -7,7 +7,7 @@ db.password= ***PASSWORD***
 #Hibernate Configuration:
 hibernate.dialect=org.hibernate.dialect.PostgreSQL95Dialect
 hibernate.show_sql=true
-entity.manager.packages.to.scan=miracle.field.model
+entity.manager.packages.to.scan=miracle.field.server.model
 # Change it after success debugging
 hibernate.hbm2ddl.auto=create-drop
 hibernate.enable_lazy_load_no_trans=true
