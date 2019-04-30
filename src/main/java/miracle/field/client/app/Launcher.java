@@ -10,8 +10,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class Launcher extends Application {
     private static ApplicationContext context;
     private SpringStageLoader springStageLoader;
-    //   1) Дина Рубина Синдром Питрушки
-    //   2) На солнечной стороне улицы
     public static void main(String[] args) {
         launch(args);
     }
