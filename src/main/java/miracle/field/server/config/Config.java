@@ -16,7 +16,10 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@EnableJpaRepositories("miracle.field.server.repository")
+@EnableJpaRepositories({
+        "miracle.field.server.repository",
+        "miracle.field.server.controller"
+})
 @PropertySource("classpath:app.properties")
 public class Config {
 
