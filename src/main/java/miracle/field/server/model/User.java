@@ -12,11 +12,17 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @Access(AccessType.FIELD)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column
-    private String name;
+    @Column(unique = true, nullable = false, length = 32)
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "statistic_id", referencedColumnName ="id")
+    private Statistic statistic;
 
 }
