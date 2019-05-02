@@ -22,5 +22,5 @@
 4) Add VM option : --module-path /PATH/TO/javafx-sdk-12.0.1/lib --add-modules javafx.controls,javafx.fxml </br>
 5) Run </br>
 
-<span>Ссылка на жизненый цикл приложения <a href="https://drive.google.com/file/d/1RPjTcMiOlIZULlTlFSQdmxLzeAxeoQnA/view?usp=sharing"></a>
+<span>Ссылка на жизненый цикл приложения <a href="https://drive.google.com/file/d/1RPjTcMiOlIZULlTlFSQdmxLzeAxeoQnA/view?usp=sharing">link</a></span>
   
