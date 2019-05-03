@@ -1,35 +1,28 @@
 package miracle.field.server.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
+@Data
+@NoArgsConstructor
 public class User {
 
     @Id
-    @Access(AccessType.FIELD)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column
-    private String name;
+    @Column(unique = true, nullable = false, length = 32)
+    private String username;
 
-    public User() {
-    }
+    @Column(nullable = false)
+    private String password;
 
-    public Integer getId() {
-        return id;
-    }
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "statistic_id", referencedColumnName ="id")
+    private Statistic statistic;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }
