@@ -1,6 +1,6 @@
 package miracle.field.server.realization;
 
-import miracle.field.server.controller.Handler;
+import miracle.field.server.handler.Handler;
 import miracle.field.server.packet.Packet;
 import org.springframework.context.ApplicationContextAware;
 

@@ -1,4 +1,4 @@
-package miracle.field.server.controller;
+package miracle.field.server.handler;
 
 import miracle.field.server.packet.Packet;
 

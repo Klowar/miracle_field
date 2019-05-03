@@ -25,8 +25,8 @@ public class SpringStageLoader implements ApplicationContextAware {
         FXMLLoader loader = new FXMLLoader();
         // Load templates
         loader.setLocation(SpringStageLoader.class.getResource(FXML_DIR + fxmlName + ".fxml"));
-        // for custom controller constructors,
-        // by default this tries to create controller empty constructor
+        // for custom handler constructors,
+        // by default this tries to create handler empty constructor
         loader.setClassLoader(SpringStageLoader.class.getClassLoader());
         loader.setControllerFactory(staticContext::getBean);
         return loader.load(SpringStageLoader.class.getResourceAsStream(FXML_DIR + fxmlName + ".fxml"));

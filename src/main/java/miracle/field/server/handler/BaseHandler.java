@@ -1,10 +1,10 @@
-package miracle.field.server.controller;
+package miracle.field.server.handler;
 
-import miracle.field.server.packet.Packet;
+import miracle.field.packet.Packet;
 
 public class BaseHandler implements Handler {
 
-    private Handler nextHandler;
+    protected Handler nextHandler;
 
     @Override
     public void registerHandler(Handler handler) {

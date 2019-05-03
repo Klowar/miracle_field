@@ -16,4 +16,5 @@ abstract class AbstractFxmlController implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
     }
+
 }

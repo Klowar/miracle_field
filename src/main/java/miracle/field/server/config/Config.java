@@ -18,7 +18,7 @@ import java.util.Properties;
 @Configuration
 @EnableJpaRepositories({
         "miracle.field.server.repository",
-        "miracle.field.server.controller"
+        "miracle.field.server.handler"
 })
 @PropertySource("classpath:app.properties")
 public class Config {

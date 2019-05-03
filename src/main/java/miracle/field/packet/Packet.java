@@ -1,4 +1,4 @@
-package miracle.field.server.packet;
+package miracle.field.packet;
 
 import miracle.field.server.model.User;
 
