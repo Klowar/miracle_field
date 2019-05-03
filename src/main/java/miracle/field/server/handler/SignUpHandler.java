@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import miracle.field.exception.ValidationException;
 import miracle.field.server.repository.UserRepository;
 import miracle.field.shared.model.User;
+import miracle.field.shared.notification.UserError;
 import miracle.field.shared.packet.Packet;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,8 @@ public class SignUpHandler extends BaseHandler {
 
 //                ToDo: сделать более информативный вывод ошибок
             } catch (DataIntegrityViolationException | ValidationException constraintException) {
-                packet = new Packet<>("userError", "", "Wrong field");
+                UserError error = new UserError("Wrong fields");
+                packet = new Packet<>("userError", "", error);
             }
         } catch (IOException e) {
             System.out.println("Can not get user from packet: " + message);
