@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane prefWidth="231.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="miracle.field.client.controller.MainController">
+<StackPane prefWidth="231.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="miracle.field.client.controller.MainController">
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
    </padding>
@@ -27,13 +27,13 @@
                         <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                         <TextField fx:id="user" promptText="Use &quot;open&quot; to login" text="open" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <TextField fx:id="password" promptText="Use &quot;sesame&quot; to login" text="sesame" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <PasswordField fx:id="password" promptText="Use &quot;sesame&quot; to login" text="sesame" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                      </children>
                   </GridPane>
                   <StackPane>
                      <children>
                         <Button fx:id="loginButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onMouseClicked="#onClickLoad" text="Login" StackPane.alignment="CENTER_RIGHT" />
-                        <Button fx:id="signUpButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onMouseClicked="#onClickLoad" text="Sign up" StackPane.alignment="BOTTOM_LEFT" />
+                        <Button fx:id="signUpButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onMouseClicked="#signUpLoad" text="Sign up" StackPane.alignment="BOTTOM_LEFT" />
                      </children>
                   </StackPane>
                </children>
