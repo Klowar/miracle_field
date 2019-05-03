@@ -1,4 +1,4 @@
-package miracle.field.server.model;
+package miracle.field.shared.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,4 +25,44 @@ public class User {
     @JoinColumn(name = "statistic_id", referencedColumnName ="id")
     private Statistic statistic;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Statistic getStatistic() {
+        return statistic;
+    }
+
+    public void setStatistic(Statistic statistic) {
+        this.statistic = statistic;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

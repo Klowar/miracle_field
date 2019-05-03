@@ -1,4 +1,4 @@
-package miracle.field.server.model;
+package miracle.field.shared.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
