@@ -1,6 +1,6 @@
 package miracle.field.server.repository;
 
-import miracle.field.server.model.Word;
+import miracle.field.shared.model.Word;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

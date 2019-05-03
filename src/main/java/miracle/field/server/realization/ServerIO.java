@@ -1,10 +1,12 @@
 package miracle.field.server.realization;
 
-import miracle.field.packet.Packet;
+import miracle.field.shared.packet.Packet;
 import miracle.field.server.handler.BaseHandler;
 import miracle.field.server.handler.Handler;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -13,7 +15,8 @@ import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ServerIO implements ServerInterface {
+@Component
+public class ServerIO implements ServerInterface, ApplicationContextAware {
     // CONSTANTS
     private final Integer DEFAULT_PORT = 55443;
     // Seems like final objects
@@ -24,13 +27,7 @@ public class ServerIO implements ServerInterface {
     private Set<Room> rooms;
     private Handler handlerChain;
 
-    public ServerIO(Integer port) {
-        init(port);
-    }
-
-    public ServerIO() {
-        init(DEFAULT_PORT);
-    }
+    public ServerIO() {}
 
     @Override
     public void init(Integer port) {
@@ -42,6 +39,7 @@ public class ServerIO implements ServerInterface {
         try {
             server = new ServerSocket(port);
             for (Handler handler : context.getBeansOfType(Handler.class).values()) {
+                System.out.println("Register handler for type: " + handler.getType());
                 registerHandler(handler);
             }
         } catch (IOException e) {
@@ -76,14 +74,18 @@ public class ServerIO implements ServerInterface {
 
     @Override
     public void handlePacket(Packet packet) {
-
+//      TODO some filter of wrong packets here
+        handlerChain.handle(packet);
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
+        init(DEFAULT_PORT);
+        start();
     }
 
+// I'm not quite agreed with this
     private class Room {
         private Set<Socket> players;
 

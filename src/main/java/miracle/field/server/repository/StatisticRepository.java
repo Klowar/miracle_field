@@ -1,6 +1,6 @@
 package miracle.field.server.repository;
 
-import miracle.field.server.model.Statistic;
+import miracle.field.shared.model.Statistic;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

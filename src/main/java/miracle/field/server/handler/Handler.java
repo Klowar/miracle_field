@@ -1,9 +1,10 @@
 package miracle.field.server.handler;
 
-import miracle.field.server.packet.Packet;
+import miracle.field.shared.packet.Packet;
 
-public interface Handler<T> {
+public interface Handler {
 
     void registerHandler(Handler handler);
-    T handle(Packet message);
+    Packet handle(Packet message);
+    String getType();
 }

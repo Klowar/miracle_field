@@ -2,6 +2,7 @@ package miracle.field.server.config;
 
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -16,6 +17,10 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
+@ComponentScan({
+        "miracle.field.server.handler",
+        "miracle.field.server.realization"
+})
 @EnableJpaRepositories({
         "miracle.field.server.repository",
         "miracle.field.server.handler"

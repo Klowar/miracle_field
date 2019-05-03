@@ -1,10 +1,17 @@
 package miracle.field.server.handler;
 
-import miracle.field.packet.Packet;
+import miracle.field.shared.packet.Packet;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BaseHandler implements Handler {
 
     protected Handler nextHandler;
+    protected String type;
+
+    public BaseHandler() {
+        this.type = "untyped";
+    }
 
     @Override
     public void registerHandler(Handler handler) {
@@ -15,7 +22,10 @@ public class BaseHandler implements Handler {
     }
 
     @Override
-    public Object handle(Packet message) {
+    public Packet handle(Packet message) {
         return nextHandler.handle(message);
     }
+
+    @Override
+    public String getType() { return type; }
 }
