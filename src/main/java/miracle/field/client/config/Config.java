@@ -8,9 +8,10 @@ import org.springframework.core.env.Environment;
 import javax.annotation.Resource;
 
 @Configuration
-@ComponentScan({"miracle.field.client.controller",
-                "miracle.field.client.form",
-                "miracle.field.client.util"})
+@ComponentScan({
+        "miracle.field.client.controller",
+        "miracle.field.client.util"
+})
 @PropertySource("classpath:app.properties")
 public class Config {
 

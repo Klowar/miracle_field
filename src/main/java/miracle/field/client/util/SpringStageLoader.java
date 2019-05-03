@@ -20,7 +20,6 @@ public class SpringStageLoader implements ApplicationContextAware {
 
     private static final String FXML_DIR = "/view/fxml/";
     private static final String MAIN_STAGE = "main";
-    private static final String SIGN_UP_STAGE = "sign_up";
 
     private Parent load(String fxmlName) throws IOException {
         FXMLLoader loader = new FXMLLoader();
@@ -36,13 +35,6 @@ public class SpringStageLoader implements ApplicationContextAware {
     public Stage loadMain() throws IOException {
         Stage stage = new Stage();
         stage.setScene(new Scene(load(MAIN_STAGE)));
-        stage.setTitle(staticTitle);
-        return stage;
-    }
-
-    public Stage loadSignUp() throws IOException {
-        Stage stage = new Stage();
-        stage.setScene(new Scene(load(SIGN_UP_STAGE)));
         stage.setTitle(staticTitle);
         return stage;
     }

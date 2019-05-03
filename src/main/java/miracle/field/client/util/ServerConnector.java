@@ -1,9 +1,11 @@
 package miracle.field.client.util;
 
+import miracle.field.shared.packet.Packet;
 import org.springframework.stereotype.Component;
 
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
@@ -21,13 +23,14 @@ public class ServerConnector {
         this.socket = new Socket(host, port);
     }
 
-    public void write(Object object) throws IOException {
+    public void writeObject(Object object) throws IOException {
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
         oos.writeObject(object);
     }
 
-    public void getObject() {
-//        TODO some logic
+    public Packet readObject() throws IOException, ClassNotFoundException {
+        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+        return (Packet) ois.readObject();
     }
 
 
