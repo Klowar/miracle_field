@@ -7,7 +7,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.NoArgsConstructor;
 import miracle.field.client.util.SpringStageLoader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -20,9 +19,6 @@ public class MainController extends AbstractFxmlController {
     @FXML private Button loginButton;
     @FXML private Button signUpButton;
 
-    @Autowired
-    private SpringStageLoader springStageLoader;
-
     @FXML
     public void onClickLoad() {
         System.out.println(getContext());
@@ -32,8 +28,7 @@ public class MainController extends AbstractFxmlController {
     public void signUpLoad() throws IOException {
         Stage stage = (Stage) loginButton.getScene().getWindow();
         stage.close();
-
-        springStageLoader.loadSignUp().show();
+        getContext().getBean(SpringStageLoader.class).loadSignUp().show();
     }
 
 }
