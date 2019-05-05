@@ -1,12 +1,10 @@
 package miracle.field.server.handler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import miracle.field.exception.ValidationException;
 import miracle.field.server.repository.UserRepository;
 import miracle.field.shared.model.User;
 import miracle.field.shared.notification.UserError;
 import miracle.field.shared.packet.Packet;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
