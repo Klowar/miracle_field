@@ -9,10 +9,13 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Component
@@ -24,7 +27,7 @@ public class ServerIO implements ServerInterface, ApplicationContextAware {
     private ServerSocket server;
     // Changeable objects
     private Set<Socket> clients;
-    private Set<Room> rooms;
+    private List<Room> rooms;
     private Handler handlerChain;
 
     public ServerIO() {}
@@ -59,11 +62,13 @@ public class ServerIO implements ServerInterface, ApplicationContextAware {
         Socket client = null;
         try {
             client = server.accept();
+            clients.add(client);
+            new Thread(new Client(client)).start();
             System.out.println("Client connected");
         } catch (IOException e) {
             System.out.println("Problem with client connection");
+            clients.remove(client);
         }
-        clients.add(client);
         waitConnections();
     }
 
@@ -73,9 +78,9 @@ public class ServerIO implements ServerInterface, ApplicationContextAware {
     }
 
     @Override
-    public void handlePacket(Packet packet) {
+    public Packet handlePacket(Packet packet) {
 //      TODO some filter of wrong packets here
-        handlerChain.handle(packet);
+        return handlerChain.handle(packet);
     }
 
     @Override
@@ -85,24 +90,74 @@ public class ServerIO implements ServerInterface, ApplicationContextAware {
         start();
     }
 
-// I'm not quite agreed with this
-    private class Room {
-        private Set<Socket> players;
+    private class Client implements Runnable {
 
-        public void writeToRoom(Packet packet) {
-            ObjectOutputStream stream = null;
-            for (Socket s : players) {
-                try {
-                    stream = new ObjectOutputStream(s.getOutputStream());
-                    stream.writeObject(packet);
-                } catch (IOException e) {
-                    System.out.println("Can not write packet " +
-                            packet + "to player " + s );
-                }
+        private Socket socket;
+        private ObjectInputStream ois;
+        private ObjectOutputStream oos;
+
+        public Client(Socket socket) throws IOException {
+            this.socket = socket;
+            ois = new ObjectInputStream(socket.getInputStream());
+            oos = new ObjectOutputStream(socket.getOutputStream());
+        }
+
+        @Override
+        public void run() {
+            System.out.println("Start listening client");
+            listen();
+        }
+
+        private void listen() {
+            Packet packet = null;
+            try {
+                packet = (Packet) ois.readObject();
+                System.out.println("Get packet: " + packet.getType());
+                packet = handlePacket(packet);
+                System.out.println("Created packet: " + packet.getType());
+                oos.writeObject(packet);
+            } catch (IOException | ClassNotFoundException e) {
+                System.out.println("Problem with client connection");
+                clients.remove(socket);
+                return;
             }
+            if (packet.getType().equals("enterRoom")) {
+                return;
+            }
+            listen();
         }
 
     }
 
+//  I'm not quite agreed with this
+    private class Room {
+//      String is a CSRF token
+        private Map<String, Socket> players;
 
+        public void writeToOne(Packet packet, String key) {
+            try {
+                ObjectOutputStream stream = new ObjectOutputStream(
+                        players.get(key).getOutputStream()
+                );
+                stream.writeObject(packet);
+            } catch (IOException e) {
+                clients.remove(players.get(key));
+                System.out.println("Can not write packet " + packet);
+            }
+        }
+
+        public void writeToRoom(Packet packet) {
+            ObjectOutputStream stream = null;
+            for (Socket s : players.values()) {
+                try {
+                    stream = new ObjectOutputStream(s.getOutputStream());
+                    stream.writeObject(packet);
+                } catch (IOException e) {
+                    clients.remove(s);
+                    System.out.println("Can not write packet " +
+                            packet + " to player " + s );
+                }
+            }
+        }
+    }
 }

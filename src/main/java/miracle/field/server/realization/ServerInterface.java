@@ -8,6 +8,6 @@ public interface ServerInterface {
     void init(Integer port);
     void start();
     void registerHandler(Handler handler);
-    void handlePacket(Packet packet);
+    Packet handlePacket(Packet packet);
 
 }
