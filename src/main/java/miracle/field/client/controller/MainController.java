@@ -6,6 +6,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.NoArgsConstructor;
+import miracle.field.client.util.Observer;
 import miracle.field.client.util.ServerConnector;
 import miracle.field.client.util.SpringStageLoader;
 import miracle.field.shared.model.User;
@@ -32,8 +33,10 @@ public class MainController extends AbstractFxmlController {
         tempUser.setPassword(password.getText());
         try {
             getContext().getBean(ServerConnector.class).writeObject(
-                    new Packet<User>("login","", tempUser)
+                    new Packet<>("login", "", tempUser)
             );
+            getContext().getBean(Observer.class).addWaiter("loginSuccess", this);
+            getContext().getBean(Observer.class).addWaiter("loginError", this);
         } catch (IOException e) {
             System.out.println("Can not write Login packet to server");
         }
@@ -48,4 +51,19 @@ public class MainController extends AbstractFxmlController {
         );
     }
 
+    @Override
+    public void getNotify(Packet packet) {
+        switch (packet.getType()) {
+            case "loginSuccess":
+//                TODO go to main window
+                getContext().getBean(Observer.class).removeWaiter("loginSuccess", this);
+                break;
+            case "loginError":
+//                TODO show error hint
+                getContext().getBean(Observer.class).removeWaiter("loginError", this);
+                break;
+            default:
+                return;
+        }
+    }
 }
