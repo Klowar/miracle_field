@@ -14,8 +14,6 @@ import java.io.IOException;
 @Component
 public class SpringStageLoader implements ApplicationContextAware {
     private static ApplicationContext staticContext;
-    //инъекция заголовка главного окна
-    private String appTitle;
     private static String staticTitle;
 
     private static final String FXML_DIR = "/view/fxml/";
@@ -46,6 +44,5 @@ public class SpringStageLoader implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext context) throws BeansException {
         SpringStageLoader.staticContext = context;
-        SpringStageLoader.staticTitle = appTitle;
     }
 }

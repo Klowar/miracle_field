@@ -2,14 +2,12 @@ package miracle.field.client.util;
 
 import miracle.field.shared.packet.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-@Component
 public class ServerConnector {
 
     private Socket socket;
