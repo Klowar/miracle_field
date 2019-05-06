@@ -22,7 +22,8 @@ import java.util.Properties;
 @Configuration
 @ComponentScan({
         "miracle.field.server.handler",
-        "miracle.field.server.realization"
+        "miracle.field.server.realization",
+        "miracle.field.server.util"
 })
 @EnableJpaRepositories({
         "miracle.field.server.repository",
