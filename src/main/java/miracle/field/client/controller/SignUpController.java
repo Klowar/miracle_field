@@ -1,14 +1,15 @@
 package miracle.field.client.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import lombok.NoArgsConstructor;
 import javafx.scene.control.Button;
 import miracle.field.client.util.Observer;
-import miracle.field.client.util.ServerConnector;
 import miracle.field.shared.model.User;
 import miracle.field.shared.packet.Packet;
+import org.java_websocket.client.WebSocketClient;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -30,8 +31,10 @@ public class SignUpController extends AbstractFxmlController {
         tempUser.setConfirmPassword(confirmPassword.getText());
 
         try {
-            getContext().getBean(ServerConnector.class).writeObject(
-                    new Packet<User>("signUp","", tempUser)
+            getContext().getBean(WebSocketClient.class).send(
+                    getContext().getBean(ObjectMapper.class).writeValueAsBytes(
+                            new Packet<>("signUp", "", tempUser)
+                    )
             );
             getContext().getBean(Observer.class).addWaiter("signUpSuccess", this);
             getContext().getBean(Observer.class).addWaiter("signUpError", this);
