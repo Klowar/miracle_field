@@ -10,7 +10,7 @@ public class BaseHandler implements Handler {
     protected String type;
 
     public BaseHandler() {
-        this.type = "untyped";
+        this.type = "reply";
     }
 
     @Override

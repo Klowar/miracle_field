@@ -2,6 +2,7 @@ package miracle.field.server.handler;
 
 import miracle.field.exception.ValidationException;
 import miracle.field.server.repository.UserRepository;
+import miracle.field.server.util.TokenGenerator;
 import miracle.field.shared.model.User;
 import miracle.field.shared.notification.UserError;
 import miracle.field.shared.packet.Packet;
@@ -17,12 +18,14 @@ public class SignUpHandler extends BaseHandler {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private final TokenGenerator tokenGenerator;
 
     @Autowired
-    public SignUpHandler(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public SignUpHandler(UserRepository userRepository, PasswordEncoder passwordEncoder, TokenGenerator tokenGenerator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.type = "signUp";
+        this.tokenGenerator = tokenGenerator;
     }
 
     @Override
@@ -41,12 +44,12 @@ public class SignUpHandler extends BaseHandler {
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
 
                 userRepository.save(user);
-                packet = new Packet<>("successSignUp", "", user);
+                packet = new Packet<>(type + "Success", tokenGenerator.generateToken(), user);
 
 //                ToDo: сделать более информативный вывод ошибок
             } catch (DataIntegrityViolationException | ValidationException constraintException) {
                 UserError error = new UserError("Wrong fields");
-                packet = new Packet<>("userError", "", error);
+                packet = new Packet<>(type + "Error", "", error);
             }
         } catch (IOException e) {
             System.out.println("Can not get user from packet: " + message);
