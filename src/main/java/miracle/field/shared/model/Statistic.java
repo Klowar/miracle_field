@@ -1,5 +1,6 @@
 package miracle.field.shared.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ public class Statistic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column(columnDefinition = "BIGINT default 0")
@@ -28,6 +30,7 @@ public class Statistic {
     private Long loses;
 
     @OneToOne(mappedBy = "statistic", fetch = FetchType.LAZY)
+    @JsonIgnore
     private User user;
 
 }
