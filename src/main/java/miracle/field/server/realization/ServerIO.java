@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Component
 public class ServerIO implements ServerInterface, ApplicationContextAware {
     // CONSTANTS
     private final Integer DEFAULT_PORT = 55443;
@@ -108,20 +107,19 @@ public class ServerIO implements ServerInterface, ApplicationContextAware {
             listen();
         }
 
+        public void writeTo(Packet packet) throws IOException {
+            oos.writeObject(packet);
+        }
+
         private void listen() {
             Packet packet = null;
             try {
                 packet = (Packet) ois.readObject();
-                System.out.println("Get packet: " + packet.getType());
                 packet = handlePacket(packet);
-                System.out.println("Created packet: " + packet.getType());
-                oos.writeObject(packet);
+                writeTo(packet);
             } catch (IOException | ClassNotFoundException e) {
-                System.out.println("Problem with client connection");
+                System.out.println("Problem with client connection, while sending packet back");
                 clients.remove(socket);
-                return;
-            }
-            if (packet.getType().equals("enterRoom")) {
                 return;
             }
             listen();
@@ -132,14 +130,12 @@ public class ServerIO implements ServerInterface, ApplicationContextAware {
 //  I'm not quite agreed with this
     private class Room {
 //      String is a CSRF token
-        private Map<String, Socket> players;
+        private Map<String, Client> players;
+        private String salt;
 
         public void writeToOne(Packet packet, String key) {
             try {
-                ObjectOutputStream stream = new ObjectOutputStream(
-                        players.get(key).getOutputStream()
-                );
-                stream.writeObject(packet);
+                players.get(key).writeTo(packet);
             } catch (IOException e) {
                 clients.remove(players.get(key));
                 System.out.println("Can not write packet " + packet);
@@ -148,10 +144,9 @@ public class ServerIO implements ServerInterface, ApplicationContextAware {
 
         public void writeToRoom(Packet packet) {
             ObjectOutputStream stream = null;
-            for (Socket s : players.values()) {
+            for (Client s : players.values()) {
                 try {
-                    stream = new ObjectOutputStream(s.getOutputStream());
-                    stream.writeObject(packet);
+                    s.writeTo(packet);
                 } catch (IOException e) {
                     clients.remove(s);
                     System.out.println("Can not write packet " +
