@@ -29,8 +29,8 @@
                                 <Label text="Password:" GridPane.rowIndex="1" />
                                 <Label text="Repeat Password:" GridPane.rowIndex="2" />
                                 <TextField fx:id="user" promptText="Use &quot;open&quot; to login" text="open" GridPane.columnIndex="1" />
-                                <PasswordField fx:id="password" promptText="Use &quot;sesame&quot; to login" text="sesame" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                <PasswordField fx:id="confirmPassword" promptText="Use &quot;sesame&quot; to login" text="sesame" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <PasswordField fx:id="password" promptText="Use &quot;sesame&quot; to login" text="sesame" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <PasswordField fx:id="confirmPassword" promptText="Use &quot;sesame&quot; to login" text="sesame" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                             </children>
                         </GridPane>
                         <StackPane prefHeight="32.0" prefWidth="210.0">

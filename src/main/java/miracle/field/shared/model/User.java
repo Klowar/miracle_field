@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "users")
 @Data
-@NoArgsConstructor
 public class User {
 
     @Id
@@ -33,4 +32,8 @@ public class User {
     @ToString.Exclude
     @Transient
     private String confirmPassword;
+
+    public User() {
+        statistic = new Statistic();
+    }
 }
