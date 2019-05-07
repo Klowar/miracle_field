@@ -17,17 +17,17 @@ public class Statistic {
     @JsonIgnore
     private Long id;
 
-    @Column(columnDefinition = "BIGINT default 0")
-    private Long score;
+    @Column
+    private Long score = 0L;
 
-    @Column(name = "game_total", columnDefinition = "BIGINT default 0")
-    private Long gameTotal;
+    @Column(name = "game_total")
+    private Long gameTotal = 0L;
 
-    @Column(columnDefinition = "BIGINT default 0")
-    private Long wins;
+    @Column
+    private Long wins = 0L;
 
-    @Column(columnDefinition = "BIGINT default 0")
-    private Long loses;
+    @Column
+    private Long loses = 0L;
 
     @OneToOne(mappedBy = "statistic", fetch = FetchType.LAZY)
     @JsonIgnore
