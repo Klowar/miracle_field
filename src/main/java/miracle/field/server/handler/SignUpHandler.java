@@ -18,14 +18,12 @@ public class SignUpHandler extends BaseHandler {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
-    private final TokenGenerator tokenGenerator;
 
     @Autowired
-    public SignUpHandler(UserRepository userRepository, PasswordEncoder passwordEncoder, TokenGenerator tokenGenerator) {
+    public SignUpHandler(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.type = "signUp";
-        this.tokenGenerator = tokenGenerator;
     }
 
     @Override
@@ -44,7 +42,7 @@ public class SignUpHandler extends BaseHandler {
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
 
                 userRepository.save(user);
-                packet = new Packet<>(type + "Success", tokenGenerator.generateToken(), user);
+                packet = new Packet<>(type + "Success", "", user);
 
 //                ToDo: сделать более информативный вывод ошибок
             } catch (DataIntegrityViolationException | ValidationException constraintException) {
