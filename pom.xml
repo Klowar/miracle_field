@@ -19,6 +19,7 @@
 
 
         <hibernate.version>5.4.1.Final</hibernate.version>
+        <hibernate-validator.version>6.0.15.Final</hibernate-validator.version>
 
         <postgresql.version>42.2.5</postgresql.version>
 
@@ -81,6 +82,12 @@
             <version>${hibernate.version}</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
+            <type>jar</type>
+        </dependency>
 
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -129,6 +136,11 @@
             <version>1.4.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.1-b08</version>
+        </dependency>
     </dependencies>
 
     <build>
