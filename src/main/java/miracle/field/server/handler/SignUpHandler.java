@@ -58,7 +58,7 @@ public class SignUpHandler extends BaseHandler {
         if (!message.getType().equals(type))
             return nextHandler.handle(message);
 
-        Packet packet = null;
+        Packet returnPacket = null;
         try {
             try {
                 User user = (User) message.getData(User.class);
@@ -85,16 +85,19 @@ public class SignUpHandler extends BaseHandler {
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
                 userRepository.save(user);
 
-                packet = new Packet<>(type + "Success", tokenGenerator.generateToken(), user);
+                returnPacket = new Packet<>(type + "Success", tokenGenerator.generateToken(), user);
 
-            } catch (DataIntegrityViolationException | ValidationException constraintException) {
+            } catch (ValidationException constraintException) {
                 UserError error = new UserError(constraintException.getMessage());
-                packet = new Packet<>(type + "Error", "", error);
+                returnPacket = new Packet<>(type + "Error", "", error);
+            } catch (DataIntegrityViolationException constraintException) {
+                UserError error = new UserError("Such username already exists");
+                returnPacket = new Packet<>(type + "Error", "", error);
             }
         } catch (IOException e) {
             System.out.println("Can not get user from packet: " + message);
         }
-
-        return packet;
+        System.out.println(returnPacket);
+        return returnPacket;
     }
 }
