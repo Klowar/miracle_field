@@ -1,11 +1,12 @@
 package miracle.field.server.config;
 
-import javafx.fxml.FXML;
 import org.hibernate.jpa.HibernatePersistenceProvider;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -14,6 +15,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -87,4 +89,19 @@ public class Config {
         return new BCryptPasswordEncoder(8);
     }
 
+
+    @Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource resourceBundleMessageSource = new ReloadableResourceBundleMessageSource();
+        resourceBundleMessageSource.setBasenames("classpath:messages/errors");
+        resourceBundleMessageSource.setDefaultEncoding("UTF-8");
+        return resourceBundleMessageSource;
+    }
+
+    @Bean
+    public LocalValidatorFactoryBean validator(){
+        LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+        localValidatorFactoryBean.setValidationMessageSource(messageSource());
+        return new LocalValidatorFactoryBean();
+    }
 }
