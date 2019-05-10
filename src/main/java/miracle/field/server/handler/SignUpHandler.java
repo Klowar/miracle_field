@@ -28,7 +28,6 @@ public class SignUpHandler extends BaseHandler {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
-    private final TokenGenerator tokenGenerator;
 
     private Validator validator;
     private PasswordsMatchValidator passwordsMatchValidator;
@@ -39,7 +38,6 @@ public class SignUpHandler extends BaseHandler {
     @Autowired
     public SignUpHandler(UserRepository userRepository,
                          PasswordEncoder passwordEncoder,
-                         TokenGenerator tokenGenerator,
                          Validator validator,
                          PasswordsMatchValidator passwordsMatchValidator,
                          EmptyFieldsValidator emptyFieldsValidator,
@@ -51,7 +49,6 @@ public class SignUpHandler extends BaseHandler {
         this.emptyFieldsValidator = emptyFieldsValidator;
         this.messageSource = messageSource;
         this.type = "signUp";
-        this.tokenGenerator = tokenGenerator;
     }
 
     @Override
@@ -88,8 +85,7 @@ public class SignUpHandler extends BaseHandler {
                     userRepository.save(user);
                 } catch (ConstraintViolationException e) {}
 
-                returnPacket = new Packet<>(type + "Success", tokenGenerator.generateToken(), user);
-
+                returnPacket = new Packet<>(type + "Success", "", user);
             } catch (ValidationException constraintException) {
                 UserError error = new UserError(constraintException.getMessage());
                 returnPacket = new Packet<>(type + "Error", "", error);

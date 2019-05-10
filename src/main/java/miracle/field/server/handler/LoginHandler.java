@@ -1,5 +1,6 @@
 package miracle.field.server.handler;
 
+import miracle.field.server.realization.SimpleServer;
 import miracle.field.server.util.TokenGenerator;
 import miracle.field.shared.model.User;
 import miracle.field.shared.notification.UserError;
@@ -10,11 +11,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
 public class LoginHandler extends BaseHandler {
 
+    private Map<User, String> authenticatedUsers;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenGenerator tokenGenerator;
@@ -25,6 +29,7 @@ public class LoginHandler extends BaseHandler {
         this.passwordEncoder = passwordEncoder;
         this.type = "login";
         this.tokenGenerator = tokenGenerator;
+        authenticatedUsers = new HashMap<>();
     }
 
     @Override
@@ -39,8 +44,12 @@ public class LoginHandler extends BaseHandler {
             Optional<User> userCandidate = userRepository.findByUsername(tempUser.getUsername());
             if(userCandidate.isPresent() &&
                     passwordEncoder.matches(tempUser.getPassword(), userCandidate.get().getPassword())) {
-//              TODO generate token here !important
-                returnPacket = new Packet<>(type + "Success", tokenGenerator.generateToken(), userCandidate.get());
+                String token = authenticatedUsers.get(userCandidate.get());
+                if (token == null) {
+                    token = tokenGenerator.generateToken();
+                    authenticatedUsers.put(userCandidate.get(), token);
+                }
+                returnPacket = new Packet<>(type + "Success", token, userCandidate.get());
             } else {
                 UserError error = new UserError("Wrong login or password");
                 returnPacket = new Packet<>(type + "Error", "", error);
