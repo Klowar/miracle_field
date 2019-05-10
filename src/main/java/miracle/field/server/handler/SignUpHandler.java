@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.DataBinder;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.io.IOException;
 import java.util.List;
@@ -83,7 +84,9 @@ public class SignUpHandler extends BaseHandler {
                 }
 
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
-                userRepository.save(user);
+                try {
+                    userRepository.save(user);
+                } catch (ConstraintViolationException e) {}
 
                 returnPacket = new Packet<>(type + "Success", tokenGenerator.generateToken(), user);
 
