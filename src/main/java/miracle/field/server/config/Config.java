@@ -1,5 +1,6 @@
 package miracle.field.server.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -103,5 +104,10 @@ public class Config {
         LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
         localValidatorFactoryBean.setValidationMessageSource(messageSource());
         return new LocalValidatorFactoryBean();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 }

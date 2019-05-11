@@ -10,12 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChatRoomHandler extends BaseRoomHandler {
 
-    private final SimpleServer server;
-
-    @Autowired
-    public ChatRoomHandler(SimpleServer server) {
+    public ChatRoomHandler() {
         this.type = "roomChat";
-        this.server = server;
     }
 
     @Override
@@ -25,7 +21,7 @@ public class ChatRoomHandler extends BaseRoomHandler {
 
         Packet returnPacket = null;
         String user = message.getToken();
-        Room room = server.getRoomById(
+        Room room = this.getRoomById(
                 getUserRoomId(user)
         );
 

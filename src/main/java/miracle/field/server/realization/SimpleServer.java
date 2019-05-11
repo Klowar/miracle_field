@@ -4,13 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import miracle.field.server.handler.BaseHandler;
 import miracle.field.server.handler.Handler;
-import miracle.field.shared.model.User;
-import miracle.field.shared.model.Word;
 import miracle.field.shared.packet.Packet;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -25,24 +24,19 @@ public class SimpleServer extends WebSocketServer implements ApplicationContextA
 
 //    Constant values
     private ApplicationContext context;
-    private final ObjectMapper mapper;
+    private ObjectMapper mapper;
     private final Handler handlerChain;
 //    Dynamic values
     private Map<String, WebSocket> activeUsers;
-    private List<Room> rooms;
 
     public SimpleServer() {
         super( new InetSocketAddress("127.0.0.1", 55443));
-        mapper = new ObjectMapper();
-        rooms = new LinkedList<>();
         handlerChain = new BaseHandler();
         activeUsers = new HashMap<>();
     }
 
     public SimpleServer(InetSocketAddress address) {
         super(address);
-        mapper = new ObjectMapper();
-        rooms = new LinkedList<>();
         handlerChain = new BaseHandler();
         activeUsers = new HashMap<>();
     }
@@ -123,20 +117,13 @@ public class SimpleServer extends WebSocketServer implements ApplicationContextA
         this.start();
     }
 
-    public Room getRoomById(Integer id) {
-        return rooms.get(id);
-    }
-
-    public Room getLastRoom() {
-        return rooms.get(rooms.size() - 1);
-    }
 
     public WebSocket getUserByToken(String token) {
         return activeUsers.get(token);
     }
 
-    public Room createNewRoom() {
-        Room newRoom = new Room(rooms.size(), mapper);
-        return newRoom;
+    @Autowired
+    public void setMapper(ObjectMapper mapper) {
+        this.mapper = mapper;
     }
 }

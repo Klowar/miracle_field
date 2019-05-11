@@ -2,6 +2,7 @@ package miracle.field.client.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import miracle.field.shared.model.User;
 import miracle.field.shared.packet.Packet;
 import org.java_websocket.client.WebSocketClient;
 import org.junit.Assert;
@@ -11,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -60,15 +60,29 @@ public class ServerConnectorTest {
     }
 
     @Test
-    public void testRoomChat() throws JsonProcessingException {
-        waiter = packet -> Assert.assertEquals("loginError", packet.getType());
+    public void testRoomChat() throws JsonProcessingException, InterruptedException {
+        waiter = packet -> Assert.assertEquals("loginSuccess", packet.getType());
         observer.addWaiter("loginError", waiter);
         observer.addWaiter("loginSuccess", waiter);
+
+        User user = new User();
+        user.setUsername("greenmapc");
+        user.setPassword("123456");
+        user.setConfirmPassword("123456");
+
         connector.send(
                 mapper.writeValueAsBytes(
-                        new Packet<>("login","", "hello")
+                        new Packet<>("login","", user)
                 )
         );
+
+//        ToDo: find how send user token
+        connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("findRoom", "", "")
+                )
+        );
+        Thread.sleep(100000);
     }
 
 }

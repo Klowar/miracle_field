@@ -2,6 +2,8 @@ package miracle.field.shared.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -28,10 +30,12 @@ public class User {
     @JoinColumn(name = "statistic_id", referencedColumnName ="id")
     @ToString.Exclude
     @JsonIgnore
+    @EqualsAndHashCode.Exclude
     private Statistic statistic;
 
     @ToString.Exclude
     @Transient
+    @EqualsAndHashCode.Exclude
     private String confirmPassword;
 
     public User() {

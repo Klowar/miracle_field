@@ -2,7 +2,6 @@ package miracle.field.server.realization;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
 import miracle.field.server.service.RoomService;
 import miracle.field.shared.model.Word;
 import miracle.field.shared.packet.Packet;

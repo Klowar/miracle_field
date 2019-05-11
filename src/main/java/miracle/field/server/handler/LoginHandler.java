@@ -44,12 +44,13 @@ public class LoginHandler extends BaseHandler {
             Optional<User> userCandidate = userRepository.findByUsername(tempUser.getUsername());
             if(userCandidate.isPresent() &&
                     passwordEncoder.matches(tempUser.getPassword(), userCandidate.get().getPassword())) {
-                String token = authenticatedUsers.get(userCandidate.get());
+                User currentUser = userCandidate.get();
+                String token = authenticatedUsers.get(currentUser);
                 if (token == null) {
                     token = tokenGenerator.generateToken();
-                    authenticatedUsers.put(userCandidate.get(), token);
+                    authenticatedUsers.put(currentUser, token);
                 }
-                returnPacket = new Packet<>(type + "Success", token, userCandidate.get());
+                returnPacket = new Packet<>(type + "Success", token, currentUser);
             } else {
                 UserError error = new UserError("Wrong login or password");
                 returnPacket = new Packet<>(type + "Error", "", error);
@@ -57,6 +58,8 @@ public class LoginHandler extends BaseHandler {
         } catch (IOException e) {
             System.out.println("Can not get user from packet: " + message);
         }
+
+        System.out.println(returnPacket);
 
         return returnPacket;
     }
