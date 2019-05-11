@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader= AnnotationConfigContextLoader.class)
-public class ServerConnectorTest {
+public class ServerRoomFindTest {
 
     @Configuration
     static class ContextConfiguration {
@@ -53,30 +53,32 @@ public class ServerConnectorTest {
     @Autowired
     private Observer observer;
     private Waiter waiter;
+    private String token;
 
     @Before
-    public void setUp() {
-        waiter = packet -> System.out.println(packet.getType());
-    }
-
-    @Test
-    public void testRoomChat() throws JsonProcessingException, InterruptedException {
-        waiter = packet -> Assert.assertEquals("loginError", packet.getType());
-        observer.addWaiter("loginError", waiter);
+    public void setUp() throws JsonProcessingException {
+        waiter = packet -> token = packet.getToken();
         observer.addWaiter("loginSuccess", waiter);
 
         User user = new User();
         user.setUsername("greenmapc");
         user.setPassword("123456");
-        user.setConfirmPassword("123456");
 
         connector.send(
                 mapper.writeValueAsBytes(
-                        new Packet<>("login","", user)
+                        new Packet<>("login", "", user)
                 )
         );
-
+    }
+    @Test
+    public void testRoomFind() throws InterruptedException, JsonProcessingException {
+        waiter = packet -> Assert.assertTrue(true);
+        observer.addWaiter("roomFindSuccess", waiter);
+        connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("findRoom", token, "")
+                )
+        );
         Thread.sleep(3000);
     }
-
 }
