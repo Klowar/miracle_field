@@ -34,7 +34,11 @@ public class BaseRoomHandler extends BaseHandler {
     }
 
     public Room getLastRoom() {
-        return rooms.getLast();
+        try {
+            return rooms.getLast();
+        } catch (NoSuchElementException e) {
+            return null;
+        }
     }
 
     @Autowired

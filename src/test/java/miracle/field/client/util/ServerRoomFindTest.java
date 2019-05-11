@@ -56,7 +56,7 @@ public class ServerRoomFindTest {
     private String token;
 
     @Before
-    public void setUp() throws JsonProcessingException {
+    public void setUp() throws JsonProcessingException, InterruptedException {
         waiter = packet -> token = packet.getToken();
         observer.addWaiter("loginSuccess", waiter);
 
@@ -69,9 +69,11 @@ public class ServerRoomFindTest {
                         new Packet<>("login", "", user)
                 )
         );
+        Thread.sleep(3000);
     }
     @Test
     public void testRoomFind() throws InterruptedException, JsonProcessingException {
+        System.out.println("token " + token);
         waiter = packet -> Assert.assertTrue(true);
         observer.addWaiter("roomFindSuccess", waiter);
         connector.send(
