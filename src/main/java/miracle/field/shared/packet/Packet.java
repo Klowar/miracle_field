@@ -47,4 +47,9 @@ public class Packet<T> implements Serializable {
     public T getData(Class<T> tClass) throws IOException {
         return mapper.readValue(data, tClass);
     }
+
+    @JsonIgnore
+    public String getSerializedData() {
+        return data;
+    }
 }

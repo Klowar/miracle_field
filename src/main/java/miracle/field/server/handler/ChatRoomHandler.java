@@ -30,7 +30,7 @@ public class ChatRoomHandler extends BaseRoomHandler {
 
         try {
             room.writeToRoom(
-                    new Packet(type,"", message.getData())
+                    new Packet(type,"", message.getSerializedData())
             );
         } catch (JsonProcessingException e) {
             System.out.println("Can not write packet to room: " +  message.getType());
