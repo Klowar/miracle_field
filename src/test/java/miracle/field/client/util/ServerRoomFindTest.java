@@ -73,6 +73,7 @@ public class ServerRoomFindTest {
     }
     @Test
     public void testRoomFind() throws InterruptedException, JsonProcessingException {
+        System.out.println("token " + token);
         waiter = packet -> Assert.assertTrue(true);
         observer.addWaiter("roomFindSuccess", waiter);
         connector.send(
