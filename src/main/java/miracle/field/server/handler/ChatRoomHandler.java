@@ -1,6 +1,7 @@
 package miracle.field.server.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import miracle.field.server.realization.Room;
 import miracle.field.server.realization.SimpleServer;
 import miracle.field.shared.packet.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class ChatRoomHandler extends BaseRoomHandler {
 
         Packet returnPacket = null;
         String user = message.getToken();
-        SimpleServer.Room room = server.getRoomById(
+        Room room = server.getRoomById(
                 getUserRoomId(user)
         );
 
