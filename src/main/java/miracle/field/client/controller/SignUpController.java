@@ -21,7 +21,6 @@ public class SignUpController extends AbstractFxmlController {
     @FXML private TextField user;
     @FXML private PasswordField password;
     @FXML private PasswordField confirmPassword;
-    @FXML private Button createButton;
 
     @FXML
     public void signUp() {
