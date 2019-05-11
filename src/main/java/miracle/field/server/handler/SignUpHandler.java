@@ -2,7 +2,6 @@ package miracle.field.server.handler;
 
 import miracle.field.exception.ValidationException;
 import miracle.field.server.repository.UserRepository;
-import miracle.field.server.util.TokenGenerator;
 import miracle.field.server.util.validator.EmptyFieldsValidator;
 import miracle.field.server.util.validator.PasswordsMatchValidator;
 import miracle.field.shared.model.User;
@@ -15,13 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.DataBinder;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 @Component
 public class SignUpHandler extends BaseHandler {
@@ -29,7 +24,6 @@ public class SignUpHandler extends BaseHandler {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
-    private Validator validator;
     private PasswordsMatchValidator passwordsMatchValidator;
     private EmptyFieldsValidator emptyFieldsValidator;
     private MessageSource messageSource;
@@ -38,13 +32,11 @@ public class SignUpHandler extends BaseHandler {
     @Autowired
     public SignUpHandler(UserRepository userRepository,
                          PasswordEncoder passwordEncoder,
-                         Validator validator,
                          PasswordsMatchValidator passwordsMatchValidator,
                          EmptyFieldsValidator emptyFieldsValidator,
                          MessageSource messageSource) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.validator = validator;
         this.passwordsMatchValidator = passwordsMatchValidator;
         this.emptyFieldsValidator = emptyFieldsValidator;
         this.messageSource = messageSource;
@@ -66,24 +58,14 @@ public class SignUpHandler extends BaseHandler {
                 dataBinder.addValidators(passwordsMatchValidator);
 
                 dataBinder.validate(user);
-                List<ConstraintViolation<User>> errors = List.copyOf(validator.validate(user));
-
                 if(dataBinder.getBindingResult().hasErrors()) {
                    throw new ValidationException(
                            messageSource.getMessage(dataBinder.getBindingResult().getAllErrors().get(0), Locale.US)
                    );
                 }
 
-                if(!errors.isEmpty()) {
-                    throw new ValidationException(
-                            messageSource.getMessage(errors.get(0).getMessage(), null, Locale.US)
-                    );
-                }
-
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
-                try {
-                    userRepository.save(user);
-                } catch (ConstraintViolationException e) {}
+                userRepository.save(user);
 
                 returnPacket = new Packet<>(type + "Success", "", user);
             } catch (ValidationException constraintException) {

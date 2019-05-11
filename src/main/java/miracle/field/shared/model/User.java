@@ -22,7 +22,6 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    @Pattern(regexp = "[A-Za-z0-9_]{6,16}", message = "password.incorrect")
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
