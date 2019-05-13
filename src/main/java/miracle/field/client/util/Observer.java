@@ -33,7 +33,7 @@ public class Observer {
         waiterList.get(s).remove(waiter);
     }
 
-    public void notifyClients(Packet packet) throws IOException {
+    public void notifyClients(Packet packet)  {
         System.out.println("Notifying windows about " + packet.getType());
         List<Waiter> waiters = waiterList.get(packet.getType());
         for (Waiter w : waiters)

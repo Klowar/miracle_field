@@ -2,11 +2,13 @@ package miracle.field.client.gui.panes;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -24,7 +26,7 @@ public class RoulettePane extends Pane {
     public RoulettePane() {
         centerOfRoulette = new Ellipse(200, 200, 10, 10);
         sectors = createRouletteSectors();
-        addSectorsToScene();
+        addElements();
     }
 
     private Sector[] createRouletteSectors() {
@@ -84,7 +86,6 @@ public class RoulettePane extends Pane {
             arc.setRadiusY(RADIUS);
             arc.setLayoutX(LAYOUT);
             arc.setLayoutY(LAYOUT);
-            arc.setStroke(Color.BLACK);
             arc.setType(ArcType.ROUND);
             arc.setLength(length);
             arc.setStartAngle(startAngle);
@@ -115,13 +116,13 @@ public class RoulettePane extends Pane {
         }
     }
 
-    private void addSectorsToScene() {
+    private void addElements() {
         for (Sector sector : sectors) {
             getChildren().addAll(sector.getArc());
         }
         for (Sector sector : sectors) {
             getChildren().addAll(sector.getText());
         }
-        getChildren().add(centerOfRoulette);
+        getChildren().addAll(centerOfRoulette);
     }
 }

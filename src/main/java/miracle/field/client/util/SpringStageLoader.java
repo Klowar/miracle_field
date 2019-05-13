@@ -25,9 +25,6 @@ public class SpringStageLoader implements ApplicationContextAware {
     private static final String SIGN_IN_STAGE_TITLE = "Вход";
 
 
-//    private static final String MAIN_STAGE = "main_old";
-//    private static final String MAIN_STAGE_TITLE = "";
-
     private Parent load(String fxmlName) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource(FXML_DIR + fxmlName + ".fxml"));
@@ -42,8 +39,8 @@ public class SpringStageLoader implements ApplicationContextAware {
     public Stage loadFirstScene() throws IOException {
         Stage stage = new Stage();
         Scene mainScene = new Scene(load(SIGN_IN_STAGE));
-//        mainScene.getStylesheets().clear();
-//        mainScene.getStylesheets().add("style/style.css");
+        mainScene.getStylesheets().clear();
+        mainScene.getStylesheets().add("style/style.css");
         stage.setScene(mainScene);
         stage.setTitle(SIGN_IN_STAGE_TITLE);
         return stage;

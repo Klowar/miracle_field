@@ -88,7 +88,7 @@ public class SignInController extends AbstractFxmlController {
 
     @FXML
     public void mainStageLoad() throws IOException {
-        Stage stage = new Stage();
+        Stage stage = (Stage) loginButton.getScene().getWindow();
         stage.setScene(
                 getContext().getBean(SpringStageLoader.class).loadScene(MAIN_STAGE));
         stage.show();
