@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import miracle.field.client.gui.elements.Triangle?>
 <?import miracle.field.client.gui.panes.RoulettePane?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.control.TextField?>
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="miracle.field.client.controller.MainController">
-    <center>
-            <BorderPane>
-                <left>
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="miracle.field.client.controller.MainController">
+    <left>
+        <BorderPane>
+            <left>
+                <StackPane styleClass="main_btns_pane">
                     <Button text="Назвать слово!"/>
-                </left>
-                <center>
+                </StackPane>
+            </left>
+            <center>
+                <StackPane>
                     <RoulettePane fx:id="roulettePain"/>
-                </center>
-                <right>
+                </StackPane>
+            </center>
+            <right>
+                <StackPane styleClass="main_btns_pane">
                     <Button text="Крутить барабан!" onMouseClicked="#spinRoulette" fx:id="spinRouletteButton"/>
-                </right>
-            </BorderPane>
-    </center>
+                </StackPane>
+            </right>
+            <bottom>
+                <StackPane>
+                    <Triangle/>
+                </StackPane>
+            </bottom>
+        </BorderPane>
+    </left>
     <right>
         <BorderPane>
             <center>
-            <TextArea disable="true"/>
+                <TextArea disable="true"/>
             </center>
             <bottom>
                 <FlowPane>
