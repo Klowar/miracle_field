@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import lombok.NoArgsConstructor;
-import javafx.scene.control.Button;
 import miracle.field.client.util.Observer;
 import miracle.field.shared.model.User;
 import miracle.field.shared.packet.Packet;
@@ -13,7 +12,6 @@ import org.java_websocket.client.WebSocketClient;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-
 
 @Component
 @NoArgsConstructor

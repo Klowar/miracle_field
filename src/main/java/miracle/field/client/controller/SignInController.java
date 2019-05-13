@@ -20,8 +20,8 @@ import java.io.IOException;
 @Component
 @NoArgsConstructor
 public class SignInController extends AbstractFxmlController {
-    private static final String SIGN_UP_STAGE = "sign_up";
-    private static final String MAIN_STAGE = "main";
+    private static final String SIGN_UP_SCENE = "sign_up";
+    private static final String MAIN_SCENE = "main";
 
     @FXML
     private TextField user;
@@ -37,7 +37,7 @@ public class SignInController extends AbstractFxmlController {
                 getContext().getBean(Observer.class).removeWaiter("loginSuccess", this);
                 Platform.runLater(() -> {
                     try {
-                        mainStageLoad();
+                        mainSceneLoad();
                     }
                     catch (IOException ex) {
                         //TODO
@@ -59,11 +59,6 @@ public class SignInController extends AbstractFxmlController {
         tempUser.setUsername(user.getText());
         tempUser.setPassword(password.getText());
         try {
-            System.out.println(
-                    getContext().getBean(ObjectMapper.class).writeValueAsString(
-                            new Packet<>("login", "", tempUser)
-                    )
-            );
             getContext().getBean(WebSocketClient.class).send(
                     getContext().getBean(ObjectMapper.class).writeValueAsBytes(
                             new Packet<>("login", "", tempUser)
@@ -82,15 +77,15 @@ public class SignInController extends AbstractFxmlController {
     public void signUpLoad() throws IOException {
         Stage stage = (Stage) loginButton.getScene().getWindow();
         stage.setScene(
-                getContext().getBean(SpringStageLoader.class).loadScene(SIGN_UP_STAGE)
+                getContext().getBean(SpringStageLoader.class).loadScene(SIGN_UP_SCENE)
         );
     }
 
     @FXML
-    public void mainStageLoad() throws IOException {
+    public void mainSceneLoad() throws IOException {
         Stage stage = (Stage) loginButton.getScene().getWindow();
         stage.setScene(
-                getContext().getBean(SpringStageLoader.class).loadScene(MAIN_STAGE));
+                getContext().getBean(SpringStageLoader.class).loadScene(MAIN_SCENE));
         stage.show();
     }
 }
