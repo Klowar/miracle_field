@@ -14,32 +14,38 @@ import java.io.IOException;
 @Component
 public class SpringStageLoader implements ApplicationContextAware {
     private static ApplicationContext staticContext;
-    private static String staticTitle;
 
     private static final String FXML_DIR = "/view/fxml/";
-    private static final String MAIN_STAGE = "main";
+    private static final String SIGN_IN_SCENE = "sign_in";
+    private static final String SIGN_IN_SCENE_TITLE = "Вход";
+
 
     private Parent load(String fxmlName) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        // Load templates
-        loader.setLocation(SpringStageLoader.class.getResource(FXML_DIR + fxmlName + ".fxml"));
+        loader.setLocation(getClass().getResource(FXML_DIR + fxmlName + ".fxml"));
         // for custom handler constructors,
-        // by default this tries to create handler empty constructor
-        loader.setClassLoader(SpringStageLoader.class.getClassLoader());
+        // by default this tries to create handler with empty constructor
+        loader.setClassLoader(getClass().getClassLoader());
         loader.setControllerFactory(staticContext::getBean);
-        return loader.load(SpringStageLoader.class.getResourceAsStream(FXML_DIR + fxmlName + ".fxml"));
+        return loader.load();
     }
 
-    public Stage loadMain() throws IOException {
+
+    public Stage loadFirstScene() throws IOException {
         Stage stage = new Stage();
-        stage.setScene(new Scene(load(MAIN_STAGE)));
-        stage.setTitle(staticTitle);
+        Scene mainScene = new Scene(load(SIGN_IN_SCENE));
+        mainScene.getStylesheets().clear();
+        mainScene.getStylesheets().add("style/style.css");
+        stage.setScene(mainScene);
+        stage.setTitle(SIGN_IN_SCENE_TITLE);
         return stage;
     }
 
     public Scene loadScene(String fxmlName) throws IOException {
         return new Scene(load(fxmlName));
     }
+
+
 
     @Override
     public void setApplicationContext(ApplicationContext context) throws BeansException {

@@ -1,0 +1,7 @@
+.arc,  .roulette_sector_text{
+    -fx-font-family: Helvetica;
+    -fx-font-weight: bold;
+}
+.main_btns_pane {
+    -fx-padding: 0 20 0 20;
+}
