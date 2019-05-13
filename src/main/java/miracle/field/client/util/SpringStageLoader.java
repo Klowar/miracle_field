@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.java_websocket.client.WebSocketClient;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -36,6 +37,10 @@ public class SpringStageLoader implements ApplicationContextAware {
         Scene mainScene = new Scene(load(SIGN_IN_SCENE));
         mainScene.getStylesheets().clear();
         mainScene.getStylesheets().add("style/style.css");
+        stage.setOnCloseRequest(we -> {
+            staticContext.getBean(WebSocketClient.class).close();
+            stage.close();
+        });
         stage.setScene(mainScene);
         stage.setTitle(SIGN_IN_SCENE_TITLE);
         return stage;
