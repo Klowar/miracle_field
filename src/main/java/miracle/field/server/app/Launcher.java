@@ -9,6 +9,5 @@ public class Launcher {
     public static void main(String[] args) {
         new AnnotationConfigApplicationContext(Config.class);
         new SimpleServer();
-//        new ServerIO();
     }
 }

@@ -2,19 +2,18 @@ package miracle.field.server.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import miracle.field.server.realization.Room;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.logging.Logger;
 
 public class BaseRoomHandler extends BaseHandler {
 
-    private Logger logger = Logger.getLogger(BaseHandler.class.getName());
+    private final Logger logger = Logger.getLogger(BaseHandler.class.getName());
+
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private static Map<String, Integer> userToRoom = new HashMap<>();
 
     private LinkedList<Room> rooms = new LinkedList<>();
-    private ObjectMapper mapper;
-
-    private static Map<String, Integer> userToRoom = new HashMap<>();
 
     static Integer getUserRoomId(String token) {
         return userToRoom.get(token);
@@ -39,11 +38,6 @@ public class BaseRoomHandler extends BaseHandler {
         } catch (NoSuchElementException e) {
             return null;
         }
-    }
-
-    @Autowired
-    public void setMapper(ObjectMapper mapper) {
-        this.mapper = mapper;
     }
 
     public List<Room> getRooms() {
