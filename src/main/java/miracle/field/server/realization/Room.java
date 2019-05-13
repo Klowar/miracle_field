@@ -2,7 +2,7 @@ package miracle.field.server.realization;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import miracle.field.server.service.RoomService;
+import miracle.field.server.service.GameService;
 import miracle.field.shared.model.Word;
 import miracle.field.shared.packet.Packet;
 import org.java_websocket.WebSocket;
@@ -14,14 +14,13 @@ public class Room {
 
     private final ObjectMapper mapper;
 
-    private RoomService roomService;
+    private GameService gameService;
 
     private Integer id;
     private Queue<WebSocket> playerOrder;
     private Map<String, WebSocket> players;
     private String salt;
     private String nextToken;
-    private Word word;
     private boolean open;
 
     public Room(Integer id, ObjectMapper mapper) {
@@ -38,16 +37,18 @@ public class Room {
     }
 
     public void startGame() throws JsonProcessingException {
+//      ToDo: what is start???
+        gameService.startGame(players);
 
-        this. word = roomService.generateWord();
+//        writeToRoom(
+//                new Packet<>("wordLength","", word.getWord().length())
+//        );
+//        writeToRoom(
+//                new Packet<>("wordDescription","", word.getDescription())
+//        );
 
-        writeToRoom(
-                new Packet<>("wordLength","", word.getWord().length())
-        );
-        writeToRoom(
-                new Packet<>("wordDescription","", word.getDescription())
-        );
         playerOrder.addAll(players.values());
+
         nextTurn();
     }
 
@@ -135,7 +136,7 @@ public class Room {
     }
 
     @Autowired
-    public void setRoomService(RoomService roomService) {
-        this.roomService = roomService;
+    public void setGameService(GameService gameService) {
+        this.gameService = gameService;
     }
 }
