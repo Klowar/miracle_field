@@ -81,11 +81,10 @@ public class Room {
     }
 
     public void addPlayer(String token) {
-        if (playerOrder.size() > 3) {
-            open = false;
-        }
-        else {
+        if (open) {
             playerOrder.add(token);
+            if (playerOrder.size() > 3)
+                open = false;
         }
     }
 
