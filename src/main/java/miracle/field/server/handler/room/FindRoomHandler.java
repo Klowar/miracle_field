@@ -23,17 +23,19 @@ public class FindRoomHandler extends BaseRoomHandler {
         if (!message.getType().equals(type))
             return nextHandler.handle(message);
 
-        Packet returnPacket = null;
+        Packet returnPacket;
         String user = message.getToken();
         Room room = this.getLastRoom();
 
         try {
+            if (getUserRoomId(message.getToken()) != null)
+                return new Packet<>(type + "Error","","You already in room");
+
             if(room == null || !room.isOpen()) {
                 room = this.createRoom();
                 room.addPlayer(
                         user
                 );
-                getRooms().add(room);
                 getLogger().info("Created new room");
             } else {
                 room.addPlayer(
@@ -44,7 +46,7 @@ public class FindRoomHandler extends BaseRoomHandler {
                     user,
                     room.getId()
             );
-            getLogger().info("User " + user + "added to " + room.getId() + " room");
+            getLogger().info("User " + user + " added to " + room.getId() + " room");
             returnPacket = new Packet<>(type + "Success", "", room.getId());
         } catch (JsonProcessingException constraintException) {
             returnPacket = new Packet<>(type + "Error", "", "");

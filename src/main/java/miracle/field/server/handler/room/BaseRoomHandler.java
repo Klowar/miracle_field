@@ -16,13 +16,16 @@ public class BaseRoomHandler extends BaseHandler {
     private final Logger logger = Logger.getLogger(BaseHandler.class.getName());
     @Autowired
     protected GameService gameService;
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static Map<String, Integer> userToRoom = new HashMap<>();
+    private static ObjectMapper mapper;
+    private static Map<String, Integer> userToRoom;
 
-    private LinkedList<Room> rooms = new LinkedList<>();
+    private static LinkedList<Room> rooms;
 
     public BaseRoomHandler() {
         this.type = "roomReply";
+        rooms = new LinkedList<>();
+        userToRoom = new HashMap<>();
+        mapper = new ObjectMapper();
     }
 
     static Integer getUserRoomId(String token) {
@@ -33,8 +36,13 @@ public class BaseRoomHandler extends BaseHandler {
         userToRoom.put(token, id);
     }
 
+    static List<Room> getRooms() {
+        return rooms;
+    }
+
     public Room createRoom() {
         Room newRoom = new Room(rooms.size(), mapper, gameService);
+        rooms.add(newRoom);
         return newRoom;
     }
 
@@ -48,10 +56,6 @@ public class BaseRoomHandler extends BaseHandler {
         } catch (NoSuchElementException e) {
             return null;
         }
-    }
-
-    public List<Room> getRooms() {
-        return rooms;
     }
 
     public ObjectMapper getMapper() {

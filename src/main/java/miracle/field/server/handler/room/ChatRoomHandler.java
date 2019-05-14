@@ -26,10 +26,10 @@ public class ChatRoomHandler extends BaseRoomHandler {
         if (!message.getType().equals(type))
             return nextHandler.handle(message);
 
-        Packet returnPacket = null;
-        String user = message.getToken();
+        Packet returnPacket = new Packet(type + "Error", "","");
+        System.out.println(getRooms());
         Room room = this.getRoomById(
-                getUserRoomId(user)
+                getUserRoomId(message.getToken())
         );
 
         try {
