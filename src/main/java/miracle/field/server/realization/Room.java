@@ -24,8 +24,7 @@ public class Room {
     private Queue<String> playerOrder;
 
     public Room(Integer id,
-                ObjectMapper mapper,
-                GameService gameService) {
+                ObjectMapper mapper) {
         this.id = id;
         this.mapper = mapper;
         this.gameService = gameService;

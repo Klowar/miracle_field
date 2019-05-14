@@ -3,6 +3,8 @@ package miracle.field.client.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -13,15 +15,18 @@ import miracle.field.client.util.SpringStageLoader;
 import miracle.field.shared.model.User;
 import miracle.field.shared.packet.Packet;
 import org.java_websocket.client.WebSocketClient;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
-@NoArgsConstructor
+//@NoArgsConstructor
 public class SignInController extends AbstractFxmlController {
     private static final String SIGN_UP_SCENE = "sign_up";
-    private static final String MAIN_SCENE = "main";
+    private static final String CABINET_SCENE = "cabinet";
 
     @FXML
     private TextField user;
@@ -37,7 +42,8 @@ public class SignInController extends AbstractFxmlController {
                 getContext().getBean(Observer.class).removeWaiter("loginSuccess", this);
                 Platform.runLater(() -> {
                     try {
-                        mainSceneLoad();
+                        User user = (User) packet.getData(User.class);
+                        cabinetSceneLoad(user);
                     }
                     catch (IOException ex) {
                         //TODO
@@ -77,15 +83,19 @@ public class SignInController extends AbstractFxmlController {
     public void signUpLoad() throws IOException {
         Stage stage = (Stage) loginButton.getScene().getWindow();
         stage.setScene(
-                getContext().getBean(SpringStageLoader.class).loadScene(SIGN_UP_SCENE)
+                getContext().getBean(SpringStageLoader.class).loadScene(SIGN_UP_SCENE, null)
         );
     }
 
     @FXML
-    public void mainSceneLoad() throws IOException {
+    public void cabinetSceneLoad(User user) throws IOException {
         Stage stage = (Stage) loginButton.getScene().getWindow();
-        stage.setScene(
-                getContext().getBean(SpringStageLoader.class).loadScene(MAIN_SCENE));
+        Map<String, Object> map = new HashMap();
+        map.put("user", user);
+        Scene cabinetScene = getContext().getBean(SpringStageLoader.class).loadScene(CABINET_SCENE, map);
+//        CabinetPane pane = (CabinetPane) cabinetScene.getRoot();
+//        pane.setUser(user);
+        stage.setScene(cabinetScene);
         stage.show();
     }
 }

@@ -26,10 +26,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "statistic_id", referencedColumnName ="id")
     @ToString.Exclude
-    @JsonIgnore
     @EqualsAndHashCode.Exclude
     private Statistic statistic;
 
