@@ -61,6 +61,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getAuthorizedUser(String token) {
+        return authenticatedUsers.entrySet()
+                .stream()
+                .filter(entry -> token.equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .findFirst().get();
+    }
+
+    @Override
     public String getToken(User user) {
         String token = authenticatedUsers.get(user);
         if (token == null) {

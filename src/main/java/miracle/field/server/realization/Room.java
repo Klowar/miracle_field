@@ -7,7 +7,9 @@ import miracle.field.server.service.GameService;
 import miracle.field.shared.packet.Packet;
 import org.java_websocket.WebSocket;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Room {
 
@@ -19,107 +21,79 @@ public class Room {
     private GameService gameService;
     private MiracleFieldInfo gameInfo;
 
-    private Queue<WebSocket> playerOrder;
-    private Map<String, WebSocket> players;
-    private String nextToken;
+    private Queue<String> playerOrder;
 
     public Room(Integer id,
                 ObjectMapper mapper) {
         this.id = id;
-        playerOrder = new PriorityQueue<>();
-        players = new HashMap<>();
-        open = true;
         this.mapper = mapper;
         this.gameService = gameService;
+
+        playerOrder = new PriorityQueue<>();
+        open = true;
     }
 
-    public Set<String> getPlayers() {
-        return players.keySet();
+
+    public Packet startGame() throws JsonProcessingException {
+        gameInfo = new MiracleFieldInfo(new HashSet<>(playerOrder));
+
+        gameService.startGame(playerOrder, gameInfo);
+
+        return new Packet<>("startGameSuccess","", gameInfo.getWord().length());
     }
 
-    public void startGame() throws JsonProcessingException {
-//      ToDo: what is start???
-        gameInfo = new MiracleFieldInfo(players.keySet());
+    public Packet nextTurn() {
+        if (gameInfo.isChangeTurn()) {
+            playerOrder.add(
+                    playerOrder.poll()
+            );
+            gameInfo.setChangeTurn(true);
+        }
 
-        gameService.startGame(players, gameInfo);
-
-        writeToRoom(
-                new Packet<>("gameInfo","", gameInfo)
+        gameInfo.setCurrentPlayer(
+                playerOrder.peek()
         );
 
-        playerOrder.addAll(players.values());
-        nextTurn();
+        return new Packet("startTurn","", gameInfo.getCurrentPlayer());
     }
 
-    public void nextTurn() throws JsonProcessingException {
-        WebSocket s = playerOrder.poll();
-        playerOrder.add(s);
-
-        s.send(
-                mapper.writeValueAsBytes(
-                        new Packet("startTurn","", "")
-                )
-        );
-        setNextToken(
-                players.entrySet()
-                        .stream()
-                        .filter(entry -> s.equals(entry.getValue()))
-                        .map(Map.Entry::getKey)
-                        .findFirst().get()
-        );
+    public Packet getWordDescription() {
+        return new Packet("roomWordDescription","", gameInfo.getWordDescription());
     }
 
-    public void writeToOne(Packet packet, String token) throws JsonProcessingException {
-        players.get(token).send(
-                mapper.writeValueAsBytes(packet)
-        );
+    public Collection<String> getUsers() {
+        return playerOrder;
     }
 
-    public void addPlayer(WebSocket webSocket, String token) {
-        players.put(token, webSocket);
-        if (players.size() > 3) {
+    public Packet makeTurn(Packet packet) {
+        gameService.gameMove(
+                gameInfo,
+                packet.getToken(),
+                packet.getData()
+        );
+        if (gameInfo.getWinner().equals(gameInfo.getCurrentPlayer())) {
+            gameService.finishedGame(gameInfo);
+            return new Packet("gameOver", "", "");
+        }
+        else
+            return nextTurn();
+    }
+
+    public void addPlayer(String token) {
+        if (playerOrder.size() > 3) {
             open = false;
-            try {
-                startGame();
-            } catch (JsonProcessingException e) {
-
-            }
+        }
+        else {
+            playerOrder.add(token);
         }
     }
 
     public void removePlayer(String token) {
-        players.remove(token);
+        playerOrder.remove(token);
     }
 
     public void removeAllPlayers() {
-        players.clear();
-    }
-
-    public WebSocket getNext() {
-        return playerOrder.peek();
-    }
-
-    public void setNext(String token) {
-        playerOrder.add(
-                players.get(token)
-        );
-    }
-
-    public String getNextToken() {
-        return nextToken;
-    }
-
-
-    public void setNextToken(String nextToken) {
-        this.nextToken = nextToken;
-    }
-
-    public void writeToRoom(Packet packet) throws JsonProcessingException {
-        for (WebSocket s : players.values()) {
-            s.send(
-                    mapper.writeValueAsBytes(packet)
-            );
-        }
+        playerOrder.clear();
     }
 
     public Integer getId() {
@@ -130,4 +104,9 @@ public class Room {
         return open;
     }
 
+    public void clean() {
+        gameInfo = null;
+        playerOrder.clear();
+        open = true;
+    }
 }

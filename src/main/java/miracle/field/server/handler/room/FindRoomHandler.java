@@ -1,4 +1,4 @@
-package miracle.field.server.handler;
+package miracle.field.server.handler.room;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import miracle.field.server.realization.Room;
@@ -31,14 +31,12 @@ public class FindRoomHandler extends BaseRoomHandler {
             if(room == null || !room.isOpen()) {
                 room = this.createRoom();
                 room.addPlayer(
-                        server.getUserByToken(user),
                         user
                 );
                 getRooms().add(room);
                 getLogger().info("Created new room");
             } else {
                 room.addPlayer(
-                        server.getUserByToken(user),
                         user
                 );
             }
@@ -49,7 +47,6 @@ public class FindRoomHandler extends BaseRoomHandler {
             getLogger().info("User " + user + "added to " + room.getId() + " room");
             returnPacket = new Packet<>(type + "Success", "", room.getId());
         } catch (JsonProcessingException constraintException) {
-//          TODO more info to user ???
             returnPacket = new Packet<>(type + "Error", "", "");
             getLogger().severe("Can not create room or add user");
         }

@@ -43,7 +43,6 @@ public class SimpleServer extends WebSocketServer implements ApplicationContextA
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        //conn.send("Welcome to the server!"); //This method sends a message to the new client
         System.out.println("Client connected: " + conn.getRemoteSocketAddress());
     }
 
