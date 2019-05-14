@@ -21,12 +21,10 @@ import java.net.URISyntaxException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader= AnnotationConfigContextLoader.class)
-public class ServerRoomFindTest {
+public class ServerRoomChatTest {
 
     @Configuration
     static class ContextConfiguration {
-
-        // this bean will be injected into the OrderServiceTest class
         @Bean
         public WebSocketClient connector() throws URISyntaxException {
             WebSocketClient client = new WebSocketServerConnector(
@@ -54,13 +52,11 @@ public class ServerRoomFindTest {
     private Observer observer;
     private Waiter waiter;
     private String token;
+    private String token1;
 
     @Before
     public void setUp() throws JsonProcessingException, InterruptedException {
-        waiter = packet -> {
-            token = packet.getToken();
-            System.out.println(packet.getSerializedData());
-        };
+        waiter = packet -> token = packet.getToken();
         observer.addWaiter("loginSuccess", waiter);
 
         User user = new User();
@@ -73,17 +69,43 @@ public class ServerRoomFindTest {
                 )
         );
         Thread.sleep(3000);
+        observer.removeWaiter("loginSuccess", waiter);
+        User user1 = new User();
+        user1.setUsername("aider");
+        user1.setPassword("123456");
+
+        waiter = packet -> token1 = packet.getToken();
+        observer.addWaiter("loginSuccess", waiter);
+        connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("login", "", user1)
+                )
+        );
+        Thread.sleep(3000);
+        observer.removeWaiter("loginSuccess", waiter);
     }
     @Test
     public void testRoomFind() throws InterruptedException, JsonProcessingException {
-        System.out.println("token " + token);
-        waiter = packet -> Assert.assertTrue(true);
+        waiter = packet -> System.out.println(packet.getSerializedData());
         observer.addWaiter("roomFindSuccess", waiter);
+        observer.addWaiter("roomChat", waiter);
+
         connector.send(
                 mapper.writeValueAsBytes(
                         new Packet<>("findRoom", token, "")
                 )
         );
+        connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("findRoom", token1, "")
+                )
+        );
         Thread.sleep(3000);
+        connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("roomChat", token, "hello")
+                )
+        );
+        Thread.sleep(4000);
     }
 }
