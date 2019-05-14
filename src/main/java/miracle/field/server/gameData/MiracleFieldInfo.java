@@ -13,8 +13,10 @@ public class MiracleFieldInfo extends GameInfo {
     private Word word;
     private char[] openLetters;
     private Map<String, Long> playersScore;
+    private boolean changeTurn;
 
     private String winner;
+    private String currentPlayer;
 
     public MiracleFieldInfo(Set<String> playersTokens) {
         PLAYERS_COUNT = playersTokens.size();
@@ -25,6 +27,7 @@ public class MiracleFieldInfo extends GameInfo {
         }
 
         this.winner = null;
+        this.changeTurn = true;
     }
 
     public String getWord() {
@@ -63,5 +66,21 @@ public class MiracleFieldInfo extends GameInfo {
 
     public void setWinner(String winner) {
         this.winner = winner;
+    }
+
+    public String getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(String currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    public boolean isChangeTurn() {
+        return changeTurn;
+    }
+
+    public void setChangeTurn(boolean changeTurn) {
+        this.changeTurn = changeTurn;
     }
 }
