@@ -1,11 +1,13 @@
 package miracle.field.client.controller;
-
+import lombok.Data;
 import miracle.field.client.util.Waiter;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import java.util.Map;
 
-abstract class AbstractFxmlController implements ApplicationContextAware, Waiter {
+@Data
+public abstract class AbstractFxmlController implements ApplicationContextAware, Waiter {
 
     private ApplicationContext context;
 
@@ -17,5 +19,9 @@ abstract class AbstractFxmlController implements ApplicationContextAware, Waiter
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
     }
+
+    public void initData(Map<String, Object> data){
+    }
+
 
 }

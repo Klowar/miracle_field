@@ -24,8 +24,7 @@ public class Room {
     private String nextToken;
 
     public Room(Integer id,
-                ObjectMapper mapper,
-                GameService gameService) {
+                ObjectMapper mapper) {
         this.id = id;
         playerOrder = new PriorityQueue<>();
         players = new HashMap<>();
