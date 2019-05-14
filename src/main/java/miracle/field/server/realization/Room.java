@@ -40,7 +40,7 @@ public class Room {
 
         gameService.startGame(playerOrder, gameInfo);
 
-        return new Packet<>("gameStart","", this.getId());
+        return new Packet<>("startGameSuccess","", gameInfo.getWord().length());
     }
 
     public Packet nextTurn() {
@@ -55,15 +55,11 @@ public class Room {
                 playerOrder.peek()
         );
 
-        return new Packet("startTurn","", "");
-    }
-
-    public Packet getWord() {
-        return new Packet("wordLength","", String.valueOf(gameInfo.getWord().length()));
+        return new Packet("startTurn","", gameInfo.getCurrentPlayer());
     }
 
     public Packet getWordDescription() {
-        return new Packet("wordLength","", gameInfo.getWordDescription());
+        return new Packet("roomWordDescription","", gameInfo.getWordDescription());
     }
 
     public Collection<String> getUsers() {
