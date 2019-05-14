@@ -2,14 +2,19 @@ package miracle.field.server.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import miracle.field.server.realization.Room;
+import miracle.field.server.service.GameService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.logging.Logger;
 
+@Component
 public class BaseRoomHandler extends BaseHandler {
 
     private final Logger logger = Logger.getLogger(BaseHandler.class.getName());
-
+    @Autowired
+    protected GameService gameService;
     private static final ObjectMapper mapper = new ObjectMapper();
     private static Map<String, Integer> userToRoom = new HashMap<>();
 
@@ -24,7 +29,7 @@ public class BaseRoomHandler extends BaseHandler {
     }
 
     public Room createRoom() {
-        Room newRoom = new Room(rooms.size(), mapper);
+        Room newRoom = new Room(rooms.size(), mapper, gameService);
         return newRoom;
     }
 
@@ -50,5 +55,9 @@ public class BaseRoomHandler extends BaseHandler {
 
     public Logger getLogger() {
         return this.logger;
+    }
+
+    public void removeUserFromRoom(String token) {
+        userToRoom.remove(token);
     }
 }
