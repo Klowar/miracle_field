@@ -1,9 +1,9 @@
 package miracle.field.server.service;
 
+import miracle.field.server.gameData.MiracleFieldInfo;
 import miracle.field.server.repository.UserRepository;
 import miracle.field.server.repository.WordRepository;
 import miracle.field.shared.model.Word;
-import miracle.field.shared.packet.Packet;
 import org.java_websocket.WebSocket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
-public class GameServiceImpl implements GameService {
+public class GameServiceImpl implements GameService<MiracleFieldInfo> {
 
     private WordRepository wordRepository;
     private StatisticService statisticService;
@@ -27,16 +27,20 @@ public class GameServiceImpl implements GameService {
 
 
     @Override
-    public void startGame(Map<String, WebSocket> players) {
+    public void startGame(Map<String, WebSocket> players,
+                          MiracleFieldInfo gameInfo) {
 //      ToDo: something else??
         Word word = wordRepository.getRandomWord();
+        gameInfo.setWord(word);
     }
 
     @Override
-    public void finishedGame() {
+    public void finishedGame(MiracleFieldInfo gameInfo) {
+
     }
 
     @Override
-    public void gameMove(Packet packet) {
+    public void gameMove(MiracleFieldInfo gameInfo, String player) {
+
     }
 }

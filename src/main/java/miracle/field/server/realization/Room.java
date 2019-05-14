@@ -2,34 +2,36 @@ package miracle.field.server.realization;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import miracle.field.server.gameData.MiracleFieldInfo;
 import miracle.field.server.service.GameService;
-import miracle.field.shared.model.Word;
 import miracle.field.shared.packet.Packet;
 import org.java_websocket.WebSocket;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 public class Room {
 
+    private Integer id;
+    private boolean open;
+
     private final ObjectMapper mapper;
 
     private GameService gameService;
+    private MiracleFieldInfo gameInfo;
 
-    private Integer id;
     private Queue<WebSocket> playerOrder;
     private Map<String, WebSocket> players;
-    private String salt;
     private String nextToken;
-    private boolean open;
 
-    public Room(Integer id, ObjectMapper mapper) {
+    public Room(Integer id,
+                ObjectMapper mapper,
+                GameService gameService) {
         this.id = id;
         playerOrder = new PriorityQueue<>();
         players = new HashMap<>();
-        salt = String.valueOf(Math.random() * 1000);
         open = true;
         this.mapper = mapper;
+        this.gameService = gameService;
     }
 
     public Set<String> getPlayers() {
@@ -38,17 +40,15 @@ public class Room {
 
     public void startGame() throws JsonProcessingException {
 //      ToDo: what is start???
-        gameService.startGame(players);
+        gameInfo = new MiracleFieldInfo(players.keySet());
 
-//        writeToRoom(
-//                new Packet<>("wordLength","", word.getWord().length())
-//        );
-//        writeToRoom(
-//                new Packet<>("wordDescription","", word.getDescription())
-//        );
+        gameService.startGame(players, gameInfo);
+
+        writeToRoom(
+                new Packet<>("gameInfo","", gameInfo)
+        );
 
         playerOrder.addAll(players.values());
-
         nextTurn();
     }
 
@@ -58,7 +58,7 @@ public class Room {
 
         s.send(
                 mapper.writeValueAsBytes(
-                        new Packet("startTurn","", salt)
+                        new Packet("startTurn","", "")
                 )
         );
         setNextToken(
@@ -110,10 +110,6 @@ public class Room {
         return nextToken;
     }
 
-    public boolean isNext(String token) {
-//          TODO more complex check
-        return (nextToken + salt).equals(token);
-    }
 
     public void setNextToken(String nextToken) {
         this.nextToken = nextToken;
@@ -135,8 +131,4 @@ public class Room {
         return open;
     }
 
-    @Autowired
-    public void setGameService(GameService gameService) {
-        this.gameService = gameService;
-    }
 }
