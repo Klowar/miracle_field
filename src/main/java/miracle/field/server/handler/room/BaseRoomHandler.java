@@ -1,6 +1,7 @@
-package miracle.field.server.handler;
+package miracle.field.server.handler.room;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import miracle.field.server.handler.BaseHandler;
 import miracle.field.server.realization.Room;
 import miracle.field.server.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ public class BaseRoomHandler extends BaseHandler {
     private static Map<String, Integer> userToRoom = new HashMap<>();
 
     private LinkedList<Room> rooms = new LinkedList<>();
+
+    public BaseRoomHandler() {
+        this.type = "roomReply";
+    }
 
     static Integer getUserRoomId(String token) {
         return userToRoom.get(token);

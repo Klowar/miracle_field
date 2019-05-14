@@ -1,4 +1,4 @@
-package miracle.field.server.handler;
+package miracle.field.server.handler.room;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import miracle.field.server.realization.Room;
@@ -8,43 +8,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GameTurnHandler extends BaseRoomHandler {
+public class StartGameHandler extends BaseRoomHandler {
 
     private final SimpleServer server;
 
     @Autowired
-    public GameTurnHandler(SimpleServer server) {
-        this.type = "gameTurn";
+    public StartGameHandler(SimpleServer server) {
+        this.type = "startGame";
         this.server = server;
     }
 
     @Override
     public Packet handle(Packet message) {
-        if (!message.getType().equals(type))
+        if (!message.getType().equals(type)) {
             nextHandler.handle(message);
-
-        Packet returnPacket = null;
+        }
         Room room = getRoomById(
                 getUserRoomId(message.getToken())
         );
-
-        returnPacket = room.makeTurn(message);
-        if (returnPacket.getType().equals("gameOver")) {
+        Packet returnPacket = new Packet(type + "Error","","Wait other users");
+        if (!room.isOpen()) {
             try {
-                for (String s : room.getUsers()) {
-                    removeUserFromRoom(s);
-                    if (s.equals(message.getToken()))
+                returnPacket = room.startGame();
+
+                for (String token : room.getUsers()) {
+                    if (token.equals(message.getToken()))
                         continue;
-                    server.getUserByToken(s).send(
+                    server.getUserByToken(token).send(
                             getMapper().writeValueAsBytes(returnPacket)
                     );
                 }
-                room.clean();
+
+                return returnPacket;
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
         }
-
         return returnPacket;
     }
 }

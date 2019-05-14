@@ -1,4 +1,4 @@
-package miracle.field.server.handler;
+package miracle.field.server.handler.room;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import miracle.field.server.realization.Room;
