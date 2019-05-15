@@ -3,6 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import miracle.field.client.gui.elements.Triangle?>
 <?import miracle.field.client.gui.panes.RoulettePane?>
+<?import miracle.field.client.gui.panes.AlphabetPane?>
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="miracle.field.client.controller.MainController">
     <left>
@@ -23,9 +24,18 @@
                 </StackPane>
             </right>
             <bottom>
-                <StackPane>
-                    <Triangle/>
-                </StackPane>
+                <BorderPane>
+                    <top>
+                        <StackPane>
+                            <Triangle/>
+                        </StackPane>
+                    </top>
+                    <bottom>
+                        <AlphabetPane fx:id="alphabetPane"/>
+                    </bottom>
+                </BorderPane>
+
+
             </bottom>
         </BorderPane>
     </left>

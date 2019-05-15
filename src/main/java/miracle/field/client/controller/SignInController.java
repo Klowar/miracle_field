@@ -15,7 +15,6 @@ import miracle.field.client.util.SpringStageLoader;
 import miracle.field.shared.model.User;
 import miracle.field.shared.packet.Packet;
 import org.java_websocket.client.WebSocketClient;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -23,10 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-//@NoArgsConstructor
+@NoArgsConstructor
 public class SignInController extends AbstractFxmlController {
     private static final String SIGN_UP_SCENE = "sign_up";
     private static final String CABINET_SCENE = "cabinet";
+    private static final String MAIN_SCENE = "main";
 
     @FXML
     private TextField user;
@@ -42,8 +42,9 @@ public class SignInController extends AbstractFxmlController {
                 getContext().getBean(Observer.class).removeWaiter("loginSuccess", this);
                 Platform.runLater(() -> {
                     try {
-                        User user = (User) packet.getData(User.class);
-                        cabinetSceneLoad(user);
+//                        User user = (User) packet.getData(User.class);
+//                        cabinetSceneLoad(user);
+                        mainSceneLoad();
                     }
                     catch (IOException ex) {
                         //TODO
@@ -93,9 +94,15 @@ public class SignInController extends AbstractFxmlController {
         Map<String, Object> map = new HashMap();
         map.put("user", user);
         Scene cabinetScene = getContext().getBean(SpringStageLoader.class).loadScene(CABINET_SCENE, map);
-//        CabinetPane pane = (CabinetPane) cabinetScene.getRoot();
-//        pane.setUser(user);
         stage.setScene(cabinetScene);
+        stage.show();
+    }
+
+    @FXML
+    public void mainSceneLoad() throws IOException {
+        Stage stage = (Stage) loginButton.getScene().getWindow();
+        Scene mainScene = getContext().getBean(SpringStageLoader.class).loadScene(MAIN_SCENE, null);
+        stage.setScene(mainScene);
         stage.show();
     }
 }
