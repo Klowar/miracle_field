@@ -81,6 +81,9 @@ public class ServerRoomStartGameTest {
 
     private void findRoom() throws JsonProcessingException, InterruptedException {
         System.out.println(Arrays.toString(tokens));
+        Waiter waiter = System.out::println;
+        observer.addWaiter("findRoomSuccess", waiter);
+
         for (String token : tokens) {
             connector.send(
                     mapper.writeValueAsBytes(
@@ -94,7 +97,8 @@ public class ServerRoomStartGameTest {
     @Test
     public void testGameStart() throws InterruptedException, JsonProcessingException {
         Waiter waiter = System.out::println;
-        observer.addWaiter("gameStartSuccess", waiter);
+        observer.addWaiter("startGameSuccess", waiter);
+        observer.addWaiter("startTurn", waiter);
         connector.send(
                 mapper.writeValueAsBytes(
                         new Packet<>("startGame", tokens[0], "")
