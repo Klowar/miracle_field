@@ -56,4 +56,9 @@ public class SignUpController extends AbstractFxmlController {
                 return;
         }
     }
+
+    @FXML
+    public void initialize() {
+        super.initialize();
+    }
 }

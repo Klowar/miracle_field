@@ -18,11 +18,11 @@ public class Observer {
         this.waiterList = new HashMap<>();
     }
 
-    public void addWaiter(String s, Waiter waiter) {
-        if (waiterList.get(s) != null)
-            waiterList.get(s).add(waiter);
+    public void addWaiter(String name, Waiter waiter) {
+        if (waiterList.get(name) != null)
+            waiterList.get(name).add(waiter);
         else
-            waiterList.put(s, new LinkedList<>(){
+            waiterList.put(name, new LinkedList<>(){
                 {
                     add(waiter);
                 }

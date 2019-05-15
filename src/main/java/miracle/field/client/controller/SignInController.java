@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import lombok.NoArgsConstructor;
 import miracle.field.client.util.Observer;
 import miracle.field.client.util.SpringStageLoader;
+import miracle.field.client.util.Waiter;
 import miracle.field.shared.model.User;
 import miracle.field.shared.packet.Packet;
 import org.java_websocket.client.WebSocketClient;
@@ -63,19 +64,11 @@ public class SignInController extends AbstractFxmlController {
         User tempUser = new User();
         tempUser.setUsername(user.getText());
         tempUser.setPassword(password.getText());
-        try {
-            getContext().getBean(WebSocketClient.class).send(
-                    getContext().getBean(ObjectMapper.class).writeValueAsBytes(
-                            new Packet<>("login", "", tempUser)
-                    )
-            );
-            getContext().getBean(Observer.class).addWaiter("loginSuccess", this);
-            getContext().getBean(Observer.class).addWaiter("loginError", this);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Can not write Login packet to server");
-        }
-        System.out.println("Login packet sent...");
+        helper.sendPacket("login", "", tempUser);
+        Map<String, Waiter> addWaitersMap = new HashMap<>();
+        addWaitersMap.put("loginSuccess", this);
+        addWaitersMap.put("loginError", this);
+        helper.addWaiters(addWaitersMap);
     }
 
     @FXML
@@ -96,4 +89,9 @@ public class SignInController extends AbstractFxmlController {
         stage.setScene(cabinetScene);
         stage.show();
     }
+    @FXML
+    public void initialize() {
+        super.initialize();
+    }
+
 }

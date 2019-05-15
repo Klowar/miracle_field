@@ -1,5 +1,5 @@
 package miracle.field.client.controller;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -7,12 +7,11 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import miracle.field.client.util.Observer;
 import miracle.field.client.util.SpringStageLoader;
+import miracle.field.client.util.Waiter;
 import miracle.field.shared.model.Statistic;
 import miracle.field.shared.model.User;
 import miracle.field.shared.packet.Packet;
-import org.java_websocket.client.WebSocketClient;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -35,10 +34,11 @@ public class CabinetController extends AbstractFxmlController {
     @FXML
     private Label score;
 
-    private void seTextUsername(){
+    private void seTextUsername() {
         User user = (User) personalMap.get("user");
         username.setText(user.getUsername());
     }
+
     private void seStatistic() {
         User user = (User) personalMap.get("user");
         Statistic statistic = user.getStatistic();
@@ -49,12 +49,13 @@ public class CabinetController extends AbstractFxmlController {
     }
 
     @Override
-    public void initData(Map<String, Object> data){
+    public void initData(Map<String, Object> data) {
         super.initData(data);
     }
 
     @FXML
     public void initialize() {
+        super.initialize();
         Platform.runLater(() -> {
             seTextUsername();
             seStatistic();
@@ -64,8 +65,11 @@ public class CabinetController extends AbstractFxmlController {
 
     @Override
     public void getNotify(Packet packet) {
-        if(packet.getType().equals("findRoomSuccess")){
-            getContext().getBean(Observer.class).removeWaiter("findRoomSuccess", this);
+        if (packet.getType().equals("findRoomSuccess")) {
+            Map<String, Waiter> addWaitersMap = new HashMap<>();
+            addWaitersMap.put("findRoomSuccess", this);
+            addWaitersMap.put("findRoomError", this);
+            helper.addWaiters(addWaitersMap);
             Platform.runLater(() -> {
                 try {
                     mainSceneLoad();
@@ -73,9 +77,8 @@ public class CabinetController extends AbstractFxmlController {
                     //TODO
                 }
             });
-        }
-        else if(packet.getType().equals("findRoomError")) {
-            System.out.println(packet.getData());
+        } else if (packet.getType().equals("findRoomError")) {
+            System.out.println("И как ты это сделал???? " + packet.getData());
         }
     }
 
@@ -88,19 +91,15 @@ public class CabinetController extends AbstractFxmlController {
 
     @FXML
     public void searchGame() {
-        try {
-            getContext().getBean(WebSocketClient.class).send(
-                    getContext().getBean(ObjectMapper.class).writeValueAsBytes(
-                            new Packet<>("findRoom", (String)personalMap.get("token"), null)
-                    )
-            );
-            getContext().getBean(Observer.class).addWaiter("findRoomSuccess", this);
-            getContext().getBean(Observer.class).addWaiter("findRoomError", this);
+        sendFindRoomPacket();
+    }
 
-        } catch (IOException e) {
-            System.out.println("Can not write Find Room packet to server");
-        }
-        System.out.println("Find Room packet sent...");
-        }
+    private void sendFindRoomPacket() {
+        helper.sendPacket("findRoom", (String) personalMap.get("token"), null);
+        Map<String, Waiter> addWaitersMap = new HashMap<>();
+        addWaitersMap.put("findRoomSuccess", this);
+        addWaitersMap.put("findRoomError", this);
+        helper.addWaiters(addWaitersMap);
+    }
 
 }

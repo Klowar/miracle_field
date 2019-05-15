@@ -13,10 +13,9 @@ import javafx.stage.Stage;
 import lombok.Data;
 import miracle.field.client.gui.panes.AlphabetPane;
 import miracle.field.client.gui.panes.RoulettePane;
-import miracle.field.client.util.Observer;
 import miracle.field.client.util.SpringStageLoader;
+import miracle.field.client.util.Waiter;
 import miracle.field.shared.packet.Packet;
-import org.java_websocket.client.WebSocketClient;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -27,10 +26,14 @@ import java.util.Map;
 @Data
 public class MainController extends AbstractFxmlController {
     private final String CALL_WORD_STAGE_TITLE = "Назовите слово";
-    @FXML private RoulettePane roulettePain;
-    @FXML private Button spinRouletteButton;
-    @FXML private AlphabetPane alphabetPane;
-    @FXML private TextArea wordDescriptionArea;
+    @FXML
+    private RoulettePane roulettePain;
+    @FXML
+    private Button spinRouletteButton;
+    @FXML
+    private AlphabetPane alphabetPane;
+    @FXML
+    private TextArea wordDescriptionArea;
 
     public MainController() {
     }
@@ -39,7 +42,9 @@ public class MainController extends AbstractFxmlController {
     public void getNotify(Packet packet) {
         switch (packet.getType()) {
             case "roomWordDescription":
-                getContext().getBean(Observer.class).removeWaiter("roomWordDescription", this);
+                HashMap<String, Waiter> removeWaitersMap = new HashMap<>();
+                removeWaitersMap.put("roomWordDescription", this);
+                helper.removeWaiters(removeWaitersMap);
                 Platform.runLater(() -> {
                     wordDescriptionArea.setText(packet.getData());
                 });
@@ -57,11 +62,12 @@ public class MainController extends AbstractFxmlController {
         roulettePain.spinRoulette();
         spinRouletteButton.setDisable(true);
     }
+
     @FXML
-    public void openCallWordWindow(){
+    public void openCallWordWindow() {
         Stage parentStage = (Stage) roulettePain.getScene().getWindow();
         try {
-            Stage modalStage = getContext().getBean(SpringStageLoader.class).loadModalWindow(parentStage, "callWord",CALL_WORD_STAGE_TITLE, new HashMap<>(), Modality.WINDOW_MODAL);
+            Stage modalStage = getContext().getBean(SpringStageLoader.class).loadModalWindow(parentStage, "callWord", CALL_WORD_STAGE_TITLE, new HashMap<>(), Modality.WINDOW_MODAL);
             modalStage.setX(parentStage.getX() + 200);
             modalStage.setY(parentStage.getY() + 100);
             modalStage.show();
@@ -73,14 +79,14 @@ public class MainController extends AbstractFxmlController {
 
     @FXML
     public void initialize() {
-        getContext().getBean(Observer.class).addWaiter("roomWordDescriptionSuccess", this);
-        getContext().getBean(Observer.class).addWaiter("roomWordDescriptionError", this);
-//        getContext().getBean(Observer.class).addWaiter("", this);
+        super.initialize();
+        sendStartGamePacket();
+        sendRoomWordDescriptionPacket();
         Platform.runLater(() -> {
             ObservableList<Node> alphabetPaneChildren = alphabetPane.getChildren();
-            for(Node node : alphabetPaneChildren) {
-                if(node.getClass().equals(Button.class)) {
-                    Button button = (Button)node;
+            for (Node node : alphabetPaneChildren) {
+                if (node.getClass().equals(Button.class)) {
+                    Button button = (Button) node;
                     button.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                         chooseLetter(button.getText());
                     });
@@ -88,23 +94,31 @@ public class MainController extends AbstractFxmlController {
             }
         });
     }
-    private void chooseLetter(String letter){
+
+    private void chooseLetter(String letter) {
         String token = (String) personalMap.get("token");
-        try {
-            getContext().getBean(WebSocketClient.class).send(
-                    getContext().getBean(ObjectMapper.class).writeValueAsBytes(
-                            new Packet<>("gameTurn", token, letter)
-                    )
-            );
-        } catch (IOException e) {
-            System.out.println("Can not write gameTurn packet to server");
-        }
-        System.out.println("gameTurn packet sent...");
+        helper.sendPacket("gameTurn", token, letter);
+    }
+
+    private void sendStartGamePacket() {
+        helper.sendPacket("startGame", (String) personalMap.get("token"), null);
+        Map<String, Waiter> addWaitersMap = new HashMap<>();
+        addWaitersMap.put("startGameSuccess", this);
+        addWaitersMap.put("startGameError", this);
+        helper.addWaiters(addWaitersMap);
+    }
+
+    private void sendRoomWordDescriptionPacket() {
+        helper.sendPacket("roomWordDescription", (String) personalMap.get("token"), null);
+        Map<String, Waiter> addWaitersMap = new HashMap<>();
+        addWaitersMap.put("roomWordDescriptionSuccess", this);
+        addWaitersMap.put("roomWordDescriptionError", this);
+        helper.addWaiters(addWaitersMap);
     }
 
 
     @Override
-    public void initData(Map<String, Object> data){
+    public void initData(Map<String, Object> data) {
         super.initData(data);
     }
 }
