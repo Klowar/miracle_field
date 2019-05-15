@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader= AnnotationConfigContextLoader.class)
-public class ServerRoomChatTest {
+public class ServerRoomStartGameTest {
 
     @Configuration
     static class ContextConfiguration {
@@ -51,63 +51,55 @@ public class ServerRoomChatTest {
     private ObjectMapper mapper;
     @Autowired
     private Observer observer;
-    private String token;
-    private String token1;
+    private String[] tokens = new String[4];
 
     @Before
     public void setUp() throws JsonProcessingException, InterruptedException {
-        Waiter waiter = packet -> token = packet.getToken();
+        login("open","sesame", 0);
+        login("aider","123456", 1);
+        login("anna","123456", 2);
+        login("nastya","123456", 3);
+        findRoom();
+    }
+
+    private void login(String login, String pswd, Integer id) throws JsonProcessingException, InterruptedException {
+        Waiter waiter = packet -> tokens[id] = packet.getToken();
         observer.addWaiter("loginSuccess", waiter);
 
         User user = new User();
-        user.setUsername("open");
-        user.setPassword("sesame");
+        user.setUsername(login);
+        user.setPassword(pswd);
 
         connector.send(
                 mapper.writeValueAsBytes(
                         new Packet<>("login", "", user)
                 )
         );
-        Thread.sleep(3000);
-        observer.removeWaiter("loginSuccess", waiter);
-        User user1 = new User();
-        user1.setUsername("aider");
-        user1.setPassword("123456");
-
-        Waiter waiter1 = packet -> token1 = packet.getToken();
-        observer.addWaiter("loginSuccess", waiter1);
-        connector.send(
-                mapper.writeValueAsBytes(
-                        new Packet<>("login", "", user1)
-                )
-        );
-        Thread.sleep(3000);
+        Thread.sleep(1000);
         observer.removeWaiter("loginSuccess", waiter);
     }
-    @Test
-    public void testRoomFind() throws InterruptedException, JsonProcessingException {
-        System.out.println(token);
-        System.out.print(token1);
-        Waiter waiter = System.out::println;
-        observer.addWaiter("roomFindSuccess", waiter);
-        observer.addWaiter("roomChat", waiter);
 
+    private void findRoom() throws JsonProcessingException, InterruptedException {
+        System.out.println(Arrays.toString(tokens));
+        for (String token : tokens) {
+            connector.send(
+                    mapper.writeValueAsBytes(
+                            new Packet<>("findRoom", token, "")
+                    )
+            );
+            Thread.sleep(1000);
+        }
+    }
+
+    @Test
+    public void testGameStart() throws InterruptedException, JsonProcessingException {
+        Waiter waiter = System.out::println;
+        observer.addWaiter("gameStartSuccess", waiter);
         connector.send(
                 mapper.writeValueAsBytes(
-                        new Packet<>("findRoom", token, "")
+                        new Packet<>("startGame", tokens[0], "")
                 )
         );
-        connector.send(
-                mapper.writeValueAsBytes(
-                        new Packet<>("findRoom", token1, "")
-                )
-        );
-        Thread.sleep(3000);
-        connector.send(
-                mapper.writeValueAsBytes(
-                        new Packet<>("roomChat", token, "hello")
-                )
-        );
-        Thread.sleep(3000);
+        Thread.sleep(5000);
     }
 }

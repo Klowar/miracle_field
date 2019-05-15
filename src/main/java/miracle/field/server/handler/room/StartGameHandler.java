@@ -30,7 +30,6 @@ public class StartGameHandler extends BaseRoomHandler {
         if (!room.isOpen()) {
             try {
                 returnPacket = room.startGame();
-
                 for (String token : room.getUsers()) {
                     if (token.equals(message.getToken()))
                         continue;

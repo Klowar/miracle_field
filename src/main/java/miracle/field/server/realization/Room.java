@@ -24,7 +24,8 @@ public class Room {
     private Queue<String> playerOrder;
 
     public Room(Integer id,
-                ObjectMapper mapper) {
+                ObjectMapper mapper,
+                GameService gameService) {
         this.id = id;
         this.mapper = mapper;
         this.gameService = gameService;
@@ -80,11 +81,10 @@ public class Room {
     }
 
     public void addPlayer(String token) {
-        if (playerOrder.size() > 3) {
-            open = false;
-        }
-        else {
+        if (open) {
             playerOrder.add(token);
+            if (playerOrder.size() > 3)
+                open = false;
         }
     }
 
