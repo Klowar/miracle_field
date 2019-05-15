@@ -2,14 +2,11 @@ package miracle.field.server.gameData;
 
 import miracle.field.shared.model.Word;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class MiracleFieldInfo extends GameInfo {
 
-    private final int PLAYERS_COUNT;
-
+    private Queue<Long> turnScore;
     private Word word;
     private char[] openLetters;
     private Map<String, Long> playersScore;
@@ -19,12 +16,14 @@ public class MiracleFieldInfo extends GameInfo {
     private String currentPlayer;
 
     public MiracleFieldInfo(Set<String> playersTokens) {
-        PLAYERS_COUNT = playersTokens.size();
-
+        final int MAX_TURN_AMOUNT = 32;
         playersScore = new HashMap<>();
-        for(String token : playersTokens) {
+        turnScore = new PriorityQueue<>();
+
+        for(String token : playersTokens)
             playersScore.put(token, 0L);
-        }
+        for (int i = 0; i < MAX_TURN_AMOUNT; i++)
+            turnScore.add((long) ((Math.random() * 16) + 1));
 
         this.winner = null;
         this.changeTurn = true;
@@ -64,6 +63,12 @@ public class MiracleFieldInfo extends GameInfo {
         this.playersScore = playersScore;
     }
 
+    public void updatePlayerScore(String token, Long score) {
+        playersScore.put(token,
+                playersScore.get(token) + score
+        );
+    }
+
     public void setWinner(String winner) {
         this.winner = winner;
     }
@@ -74,6 +79,14 @@ public class MiracleFieldInfo extends GameInfo {
 
     public void setCurrentPlayer(String currentPlayer) {
         this.currentPlayer = currentPlayer;
+    }
+
+    public Long getTurnScore() {
+        return turnScore.peek();
+    }
+
+    public Long getChangeTurnScore() {
+        return turnScore.poll();
     }
 
     public boolean isChangeTurn() {
