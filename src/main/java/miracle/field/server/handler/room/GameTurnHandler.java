@@ -7,6 +7,7 @@ import miracle.field.shared.packet.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
@@ -40,6 +41,7 @@ public class GameTurnHandler extends BaseRoomHandler {
             LOGGER.info("Turn status: " + returnPacket.getType());
 
             if (returnPacket.getType().equals("gameOver")) {
+                users = new ArrayList<>(room.getUsers());
                 room.clean();
             } else {
                 if (returnPacket.getToken().equals(type + "Error"))

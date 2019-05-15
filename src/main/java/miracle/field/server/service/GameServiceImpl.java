@@ -1,16 +1,20 @@
 package miracle.field.server.service;
 
+import com.sun.xml.fastinfoset.util.CharArray;
+import com.sun.xml.fastinfoset.util.CharArrayArray;
 import miracle.field.server.gameData.MiracleFieldInfo;
 import miracle.field.server.repository.UserRepository;
 import miracle.field.server.repository.WordRepository;
 import miracle.field.shared.model.Statistic;
 import miracle.field.shared.model.Word;
+import org.hibernate.type.CharacterType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -54,18 +58,31 @@ public class GameServiceImpl implements GameService<MiracleFieldInfo> {
         String currentPlayer = gameInfo.getCurrentPlayer();
         if (!currentPlayer.equals(player))
             return;
-        Set word = gameInfo.getOpenLetters();
+
+        Set<Character> word = gameInfo.getOpenLetters();
+
         if (!word.contains(data) && gameInfo.getWord().contains(data)) {
             gameInfo.setChangeTurn(false);
-            gameInfo.addLetter(data.charAt(0));
+            stringToSet(data, gameInfo.getOpenLetters());
             gameInfo.updatePlayerScore(currentPlayer, gameInfo.getChangeTurnScore());
         }
 
-        if (Arrays.equals(gameInfo.getWord().toCharArray(), (word + data).toCharArray()) ||
-        Arrays.equals(gameInfo.getWord().toCharArray(), data.toCharArray())) {
+        if (stringToSet(gameInfo.getWord(), null).equals(word) ||
+            Arrays.equals(gameInfo.getWord().toCharArray(), data.toCharArray())) {
             gameInfo.setWinner(player);
         }
 
+    }
+
+    private Set<Character> stringToSet(String word, @Nullable Set<Character> resultSet) {
+        if(resultSet == null) {
+            resultSet = new HashSet<>();
+        }
+
+        for(int i = 0; i < word.length(); i ++) {
+            resultSet.add(word.charAt(i));
+        }
+        return resultSet;
     }
 
 }

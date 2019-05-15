@@ -104,6 +104,7 @@ public class ServerRoomGameTurnTest {
 
         observer.addWaiter("gameTurnSuccess",waiter);
         observer.addWaiter("gameTurnError",waiter);
+        observer.addWaiter("gameOver",waiter);
         connector.send(
                 mapper.writeValueAsBytes(
                         new Packet<>("startGame", tokens[0], "")
@@ -114,6 +115,14 @@ public class ServerRoomGameTurnTest {
         connector.send(
                 mapper.writeValueAsBytes(
                         new Packet<>("gameTurn", playerToken[0], "f")
+                )
+        );connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("gameTurn", playerToken[0], "o")
+                )
+        );connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("gameTurn", playerToken[0], "x")
                 )
         );
         Thread.sleep(2000);

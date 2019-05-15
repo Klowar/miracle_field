@@ -52,7 +52,7 @@ public class MiracleFieldInfo extends GameInfo {
         return word.getDescription();
     }
 
-    public Set getOpenLetters() {
+    public Set<Character> getOpenLetters() {
         return openLetters;
     }
 
