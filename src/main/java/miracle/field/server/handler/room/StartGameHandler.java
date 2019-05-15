@@ -31,8 +31,6 @@ public class StartGameHandler extends BaseRoomHandler {
             try {
                 returnPacket = room.startGame();
                 for (String token : room.getUsers()) {
-                    if (token.equals(message.getToken()))
-                        continue;
                     server.getUserByToken(token).send(
                             getMapper().writeValueAsBytes(returnPacket)
                     );

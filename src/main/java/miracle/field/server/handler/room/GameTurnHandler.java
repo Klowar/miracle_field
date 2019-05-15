@@ -23,7 +23,7 @@ public class GameTurnHandler extends BaseRoomHandler {
         if (!message.getType().equals(type))
             nextHandler.handle(message);
 
-        Packet returnPacket = null;
+        Packet returnPacket;
         Room room = getRoomById(
                 getUserRoomId(message.getToken())
         );
@@ -43,6 +43,21 @@ public class GameTurnHandler extends BaseRoomHandler {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
+        }
+        else {
+            if (returnPacket.getToken().equals(type + "Error"))
+                return returnPacket;
+            Packet nextPlayer = room.nextTurn();
+            if (nextPlayer.getToken().equals(message.getToken()))
+                returnPacket = nextPlayer;
+            else
+                try {
+                    server.getUserByToken(nextPlayer.getToken()).send(
+                            getMapper().writeValueAsBytes(nextPlayer)
+                    );
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
         }
 
         return returnPacket;
