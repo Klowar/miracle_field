@@ -31,7 +31,15 @@
                         </StackPane>
                     </top>
                     <bottom>
-                        <AlphabetPane fx:id="alphabetPane"/>
+                        <BorderPane>
+                            <top>
+                                <TextArea fx:id="wordDescriptionArea" disable="true"/>
+                            </top>
+                            <bottom>
+                                <AlphabetPane fx:id="alphabetPane"/>
+                            </bottom>
+                        </BorderPane>
+
                     </bottom>
                 </BorderPane>
             </bottom>
