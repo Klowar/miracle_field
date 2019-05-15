@@ -7,6 +7,7 @@ import miracle.field.shared.packet.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.logging.Logger;
 
 @Component
@@ -26,47 +27,46 @@ public class GameTurnHandler extends BaseRoomHandler {
         if (!message.getType().equals(type))
             return nextHandler.handle(message);
 
-        Packet returnPacket;
         Room room = getRoomById(
                 getUserRoomId(message.getToken())
         );
 
-        returnPacket = room.makeTurn(message);
+        Collection<String> users = room.getUsers();
 
-        LOGGER.info("Turn status: " + returnPacket.getType());
+        Packet returnPacket = null;
+        try {
+            returnPacket = room.makeTurn(message);
 
-        if (returnPacket.getType().equals("gameOver")) {
-            try {
-                for (String s : room.getUsers()) {
-                    removeUserFromRoom(s);
-                    if (s.equals(message.getToken()))
-                        continue;
-                    server.getUserByToken(s).send(
-                            getMapper().writeValueAsBytes(returnPacket)
-                    );
-                }
+            LOGGER.info("Turn status: " + returnPacket.getType());
+
+            if (returnPacket.getType().equals("gameOver")) {
                 room.clean();
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            if (returnPacket.getToken().equals(type + "Error"))
-                return returnPacket;
-            Packet nextPlayer = room.nextTurn();
+            } else {
+                if (returnPacket.getToken().equals(type + "Error"))
+                    return returnPacket;
+                Packet nextPlayer = room.nextTurn();
 
-            LOGGER.info("Next Player : " + nextPlayer.getToken() + " Score: " +  nextPlayer.getData());
+                LOGGER.info("Next Player : " + nextPlayer.getToken() + " Score: " + nextPlayer.getData());
 
-            if (nextPlayer.getToken().equals(message.getToken()))
-                returnPacket = nextPlayer;
-            else
-                try {
+                if (nextPlayer.getToken().equals(message.getToken()))
+                    returnPacket = nextPlayer;
+                else {
                     server.getUserByToken(nextPlayer.getToken()).send(
                             getMapper().writeValueAsBytes(nextPlayer)
                     );
-                } catch (JsonProcessingException e) {
-                   LOGGER.severe("ERROR TURN GAME");
                 }
+            }
+
+            for (String s : users) {
+                if (s.equals(message.getToken()))
+                    continue;
+                server.getUserByToken(s).send(
+                        getMapper().writeValueAsBytes(returnPacket.createPacketWithoutToken())
+                );
+            }
+
+        } catch (JsonProcessingException e) {
+            LOGGER.severe("CAN NOT TURN");
         }
 
         return returnPacket;

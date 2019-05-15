@@ -41,7 +41,7 @@ public class StartGameHandler extends BaseRoomHandler {
                         continue;
                     }
                     server.getUserByToken(token).send(
-                            getMapper().writeValueAsBytes(returnPacket)
+                            getMapper().writeValueAsBytes(returnPacket.createPacketWithoutToken())
                     );
                 }
             } catch (JsonProcessingException e) {

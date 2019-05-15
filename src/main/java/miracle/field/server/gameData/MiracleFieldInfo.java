@@ -1,18 +1,32 @@
 package miracle.field.server.gameData;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.ToString;
 import miracle.field.shared.model.Word;
 
 import java.util.*;
 
+@ToString
 public class MiracleFieldInfo extends GameInfo {
 
+    @JsonIgnore
     private Queue<Long> turnScore;
+
+    @JsonIgnore
     private Word word;
+
     private Set<Character> openLetters;
+
+    @JsonIgnore
     private Map<String, Long> playersScore;
+
+    @JsonIgnore
     private boolean changeTurn;
 
+    @JsonIgnore
     private String winner;
+
+    @JsonIgnore
     private String currentPlayer;
 
     public MiracleFieldInfo(Set<String> playersTokens) {
@@ -33,6 +47,7 @@ public class MiracleFieldInfo extends GameInfo {
         return word.getWord();
     }
 
+    @JsonIgnore
     public String getWordDescription() {
         return word.getDescription();
     }

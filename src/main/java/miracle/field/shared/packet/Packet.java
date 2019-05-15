@@ -20,6 +20,10 @@ public class Packet<T> implements Serializable {
     protected static ObjectMapper mapper = new ObjectMapper();
     protected String data;
 
+    public Packet createPacketWithoutToken() {
+        return new Packet(this.getType(), "", this.getData());
+    }
+
     @JsonCreator
     public Packet(
             @JsonProperty("type") String type,

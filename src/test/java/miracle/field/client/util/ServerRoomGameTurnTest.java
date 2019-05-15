@@ -99,7 +99,6 @@ public class ServerRoomGameTurnTest {
         Waiter waiter = System.out::println;
         Waiter waiter1 = packet -> playerToken[0] = packet.getToken();
         observer.addWaiter("startTurn", waiter);
-        observer.addWaiter("startTurn", waiter1);
         observer.addWaiter("startGameSuccess", waiter1);
         observer.addWaiter("startGameSuccess", waiter);
 
@@ -114,7 +113,7 @@ public class ServerRoomGameTurnTest {
 
         connector.send(
                 mapper.writeValueAsBytes(
-                        new Packet<>("gameTurn", playerToken[0], "p")
+                        new Packet<>("gameTurn", playerToken[0], "f")
                 )
         );
         Thread.sleep(2000);
