@@ -95,9 +95,13 @@ public class ServerRoomGameTurnTest {
 
     @Test
     public void testGameTurn() throws InterruptedException, JsonProcessingException {
+        final String[] playerToken = new String[1];
         Waiter waiter = System.out::println;
-        observer.addWaiter("startGameSuccess",waiter);
-        observer.addWaiter("gameTurn",waiter);
+        Waiter waiter1 = packet -> playerToken[0] = packet.getToken();
+        observer.addWaiter("startTurn", waiter1);
+        observer.addWaiter("startTurn", waiter);
+        observer.addWaiter("startGameSuccess", waiter1);
+
         observer.addWaiter("gameTurnSuccess",waiter);
         observer.addWaiter("gameTurnError",waiter);
         observer.addWaiter("startTurn",waiter);
@@ -107,10 +111,10 @@ public class ServerRoomGameTurnTest {
                 )
         );
         Thread.sleep(1000);
-
+        System.out.println(playerToken[0]);
         connector.send(
                 mapper.writeValueAsBytes(
-                        new Packet<>("gameTurn", tokens[0], "u")
+                        new Packet<>("gameTurn", playerToken[0], "u")
                 )
         );
         Thread.sleep(1000);
