@@ -24,7 +24,7 @@ public class GameTurnHandler extends BaseRoomHandler {
     @Override
     public Packet handle(Packet message) {
         if (!message.getType().equals(type))
-            nextHandler.handle(message);
+            return nextHandler.handle(message);
 
         Packet returnPacket;
         Room room = getRoomById(
@@ -33,7 +33,7 @@ public class GameTurnHandler extends BaseRoomHandler {
 
         returnPacket = room.makeTurn(message);
 
-        LOGGER.info("Room status: " + returnPacket.getType());
+        LOGGER.info("Turn status: " + returnPacket.getType());
 
         if (returnPacket.getType().equals("gameOver")) {
             try {

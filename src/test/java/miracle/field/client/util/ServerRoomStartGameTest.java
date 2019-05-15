@@ -99,6 +99,7 @@ public class ServerRoomStartGameTest {
         Waiter waiter = System.out::println;
         observer.addWaiter("startGameSuccess", waiter);
         observer.addWaiter("startTurn", waiter);
+        observer.addWaiter("gameTurnSuccess", waiter);
         connector.send(
                 mapper.writeValueAsBytes(
                         new Packet<>("startGame", tokens[0], "")
