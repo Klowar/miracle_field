@@ -98,25 +98,25 @@ public class ServerRoomGameTurnTest {
         final String[] playerToken = new String[1];
         Waiter waiter = System.out::println;
         Waiter waiter1 = packet -> playerToken[0] = packet.getToken();
-        observer.addWaiter("startTurn", waiter1);
         observer.addWaiter("startTurn", waiter);
+        observer.addWaiter("startTurn", waiter1);
         observer.addWaiter("startGameSuccess", waiter1);
+        observer.addWaiter("startGameSuccess", waiter);
 
         observer.addWaiter("gameTurnSuccess",waiter);
         observer.addWaiter("gameTurnError",waiter);
-        observer.addWaiter("startTurn",waiter);
         connector.send(
                 mapper.writeValueAsBytes(
                         new Packet<>("startGame", tokens[0], "")
                 )
         );
         Thread.sleep(1000);
-        System.out.println(playerToken[0]);
+
         connector.send(
                 mapper.writeValueAsBytes(
-                        new Packet<>("gameTurn", playerToken[0], "u")
+                        new Packet<>("gameTurn", playerToken[0], "p")
                 )
         );
-        Thread.sleep(1000);
+        Thread.sleep(2000);
     }
 }

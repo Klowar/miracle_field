@@ -8,7 +8,7 @@ public class MiracleFieldInfo extends GameInfo {
 
     private Queue<Long> turnScore;
     private Word word;
-    private char[] openLetters;
+    private Set<Character> openLetters;
     private Map<String, Long> playersScore;
     private boolean changeTurn;
 
@@ -37,7 +37,7 @@ public class MiracleFieldInfo extends GameInfo {
         return word.getDescription();
     }
 
-    public char[] getOpenLetters() {
+    public Set getOpenLetters() {
         return openLetters;
     }
 
@@ -51,12 +51,12 @@ public class MiracleFieldInfo extends GameInfo {
 
 
     public void setWord(Word word) {
-        openLetters = new char[word.getWord().length()];
+        openLetters = new HashSet<>();
         this.word = word;
     }
 
-    public void setOpenLetters(char[] openLetters) {
-        this.openLetters = openLetters;
+    public void addLetter(Character s) {
+        openLetters.add(s);
     }
 
     public void setPlayersScore(Map<String, Long> playersScore) {

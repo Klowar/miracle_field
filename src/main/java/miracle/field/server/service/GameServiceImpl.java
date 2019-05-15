@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class GameServiceImpl implements GameService<MiracleFieldInfo> {
@@ -53,14 +54,14 @@ public class GameServiceImpl implements GameService<MiracleFieldInfo> {
         String currentPlayer = gameInfo.getCurrentPlayer();
         if (!currentPlayer.equals(player))
             return;
-        String word = Arrays.toString(gameInfo.getOpenLetters());
-        if (!word.contains(data)) {
+        Set word = gameInfo.getOpenLetters();
+        if (!word.contains(data) && gameInfo.getWord().contains(data)) {
             gameInfo.setChangeTurn(false);
-            gameInfo.setOpenLetters((word + data).toCharArray());
+            gameInfo.addLetter(data.charAt(0));
             gameInfo.updatePlayerScore(currentPlayer, gameInfo.getChangeTurnScore());
         }
 
-        if (Arrays.equals(gameInfo.getWord().toCharArray(),(word + data).toCharArray()) ||
+        if (Arrays.equals(gameInfo.getWord().toCharArray(), (word + data).toCharArray()) ||
         Arrays.equals(gameInfo.getWord().toCharArray(), data.toCharArray())) {
             gameInfo.setWinner(player);
         }
