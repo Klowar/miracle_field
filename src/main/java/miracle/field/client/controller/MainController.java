@@ -6,36 +6,50 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import miracle.field.client.gui.panes.AlphabetPane;
 import miracle.field.client.gui.panes.RoulettePane;
 import miracle.field.client.util.Observer;
 import miracle.field.client.util.SpringStageLoader;
-import miracle.field.shared.model.User;
 import miracle.field.shared.packet.Packet;
 import org.java_websocket.client.WebSocketClient;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 @Component
-@NoArgsConstructor
 @Data
 public class MainController extends AbstractFxmlController {
     private final String CALL_WORD_STAGE_TITLE = "Назовите слово";
     @FXML private RoulettePane roulettePain;
     @FXML private Button spinRouletteButton;
     @FXML private AlphabetPane alphabetPane;
+    @FXML private TextArea wordDescriptionArea;
+
+    public MainController() {
+    }
 
     @Override
     public void getNotify(Packet packet) {
-
+        switch (packet.getType()) {
+            case "roomWordDescription":
+                getContext().getBean(Observer.class).removeWaiter("roomWordDescription", this);
+                Platform.runLater(() -> {
+                    wordDescriptionArea.setText(packet.getData());
+                });
+                break;
+            case "":
+//
+                break;
+            default:
+                return;
+        }
     }
 
     @FXML
@@ -59,6 +73,9 @@ public class MainController extends AbstractFxmlController {
 
     @FXML
     public void initialize() {
+        getContext().getBean(Observer.class).addWaiter("roomWordDescriptionSuccess", this);
+        getContext().getBean(Observer.class).addWaiter("roomWordDescriptionError", this);
+//        getContext().getBean(Observer.class).addWaiter("", this);
         Platform.runLater(() -> {
             ObservableList<Node> alphabetPaneChildren = alphabetPane.getChildren();
             for(Node node : alphabetPaneChildren) {
@@ -79,14 +96,12 @@ public class MainController extends AbstractFxmlController {
                             new Packet<>("gameTurn", token, letter)
                     )
             );
-            //TODO
-//            getContext().getBean(Observer.class).addWaiter("?", this);
-//            getContext().getBean(Observer.class).addWaiter("?", this);
         } catch (IOException e) {
             System.out.println("Can not write gameTurn packet to server");
         }
         System.out.println("gameTurn packet sent...");
     }
+
 
     @Override
     public void initData(Map<String, Object> data){

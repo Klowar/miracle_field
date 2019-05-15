@@ -3,7 +3,6 @@ package miracle.field.client.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -26,7 +25,6 @@ import java.util.Map;
 public class SignInController extends AbstractFxmlController {
     private static final String SIGN_UP_SCENE = "sign_up";
     private static final String CABINET_SCENE = "cabinet";
-    private static final String MAIN_SCENE = "main";
 
     @FXML
     private TextField user;
@@ -44,8 +42,7 @@ public class SignInController extends AbstractFxmlController {
                     try {
                         User user = (User) packet.getData(User.class);
                         String token = packet.getToken();
-//                        cabinetSceneLoad(user);
-                        mainSceneLoad(token);
+                        cabinetSceneLoad(user, token);
                     }
                     catch (IOException ex) {
                         //TODO
@@ -90,21 +87,13 @@ public class SignInController extends AbstractFxmlController {
     }
 
     @FXML
-    public void cabinetSceneLoad(User user) throws IOException {
+    public void cabinetSceneLoad(User user, String token) throws IOException {
         Stage stage = (Stage) loginButton.getScene().getWindow();
         Map<String, Object> map = new HashMap<>();
         map.put("user", user);
+        getContext().getBean(SpringStageLoader.class).addStaticField("token", token);
         Scene cabinetScene = getContext().getBean(SpringStageLoader.class).loadScene(CABINET_SCENE, map);
         stage.setScene(cabinetScene);
-        stage.show();
-    }
-
-    @FXML
-    public void mainSceneLoad(String token) throws IOException {
-        Stage stage = (Stage) loginButton.getScene().getWindow();
-        getContext().getBean(SpringStageLoader.class).addStaticField("token", token);
-        Scene mainScene = getContext().getBean(SpringStageLoader.class).loadScene(MAIN_SCENE, new HashMap<>());
-        stage.setScene(mainScene);
         stage.show();
     }
 }
