@@ -17,7 +17,7 @@ public class Packet<T> implements Serializable {
     private String token;
 
     @JsonIgnore
-    protected ObjectMapper mapper;
+    protected static ObjectMapper mapper = new ObjectMapper();
     protected String data;
 
     @JsonCreator
@@ -28,18 +28,15 @@ public class Packet<T> implements Serializable {
         this.type = type;
         this.token = token;
         this.data = data;
-        mapper = new ObjectMapper();
     }
 
     public Packet(String type, String token, T object) throws JsonProcessingException {
-        mapper = new ObjectMapper();
         this.type = type;
         this.token = token;
         data = mapper.writeValueAsString(object);
     }
 
     public Packet(T object) throws JsonProcessingException {
-        mapper = new ObjectMapper();
         data = mapper.writeValueAsString(object);
     }
 

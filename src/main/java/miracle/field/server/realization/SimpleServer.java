@@ -87,6 +87,7 @@ public class SimpleServer extends WebSocketServer implements ApplicationContextA
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
+        ex.printStackTrace();
         System.err.println("Error at " + conn.getRemoteSocketAddress()  + " : " + ex.getMessage());
         try {
             conn.send(

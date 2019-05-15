@@ -7,10 +7,13 @@ import miracle.field.shared.packet.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.logging.Logger;
+
 @Component
 public class StartGameHandler extends BaseRoomHandler {
 
     private final SimpleServer server;
+    private final Logger LOGGER = Logger.getLogger(StartGameHandler.class.getName());
 
     @Autowired
     public StartGameHandler(SimpleServer server) {
@@ -31,18 +34,17 @@ public class StartGameHandler extends BaseRoomHandler {
             try {
                 returnPacket = room.startGame();
                 for (String token : room.getUsers()) {
-                    if (token.equals(message.getToken()))
-                        continue;
                     server.getUserByToken(token).send(
                             getMapper().writeValueAsBytes(returnPacket)
                     );
                 }
-
-                return returnPacket;
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                LOGGER.severe("Can not start game");
             }
         }
+
+        LOGGER.info("sent " + returnPacket);
+
         return returnPacket;
     }
 }

@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader= AnnotationConfigContextLoader.class)
-public class ServerRoomStartGameTest {
+public class ServerRoomGameTurnTest {
 
     @Configuration
     static class ContextConfiguration {
@@ -80,10 +80,9 @@ public class ServerRoomStartGameTest {
     }
 
     private void findRoom() throws JsonProcessingException, InterruptedException {
-        System.out.println(Arrays.toString(tokens));
         Waiter waiter = System.out::println;
-        observer.addWaiter("findRoomSuccess", waiter);
-
+        observer.addWaiter("findRoomSuccess",waiter);
+        observer.addWaiter("findRoomError",waiter);
         for (String token : tokens) {
             connector.send(
                     mapper.writeValueAsBytes(
@@ -95,15 +94,25 @@ public class ServerRoomStartGameTest {
     }
 
     @Test
-    public void testGameStart() throws InterruptedException, JsonProcessingException {
+    public void testGameTurn() throws InterruptedException, JsonProcessingException {
         Waiter waiter = System.out::println;
-        observer.addWaiter("startGameSuccess", waiter);
-        observer.addWaiter("startTurn", waiter);
+        observer.addWaiter("startGameSuccess",waiter);
+        observer.addWaiter("gameTurn",waiter);
+        observer.addWaiter("gameTurnSuccess",waiter);
+        observer.addWaiter("gameTurnError",waiter);
+        observer.addWaiter("startTurn",waiter);
         connector.send(
                 mapper.writeValueAsBytes(
                         new Packet<>("startGame", tokens[0], "")
                 )
         );
-        Thread.sleep(5000);
+        Thread.sleep(1000);
+
+        connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("gameTurn", tokens[0], "u")
+                )
+        );
+        Thread.sleep(1000);
     }
 }

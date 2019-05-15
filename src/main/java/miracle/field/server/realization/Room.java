@@ -5,11 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import miracle.field.server.gameData.MiracleFieldInfo;
 import miracle.field.server.service.GameService;
 import miracle.field.shared.packet.Packet;
-import org.java_websocket.WebSocket;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.logging.Logger;
 
 public class Room {
 
@@ -23,6 +21,8 @@ public class Room {
 
     private Queue<String> playerOrder;
 
+    private final Logger LOGGER = Logger.getLogger(Room.class.getName());
+
     public Room(Integer id,
                 ObjectMapper mapper,
                 GameService gameService) {
@@ -30,7 +30,7 @@ public class Room {
         this.mapper = mapper;
         this.gameService = gameService;
 
-        playerOrder = new PriorityQueue<>();
+        playerOrder = new LinkedList<>();
         open = true;
     }
 
@@ -40,6 +40,8 @@ public class Room {
 
         gameService.startGame(playerOrder, gameInfo);
 
+        LOGGER.info("Game started. Word is " + gameInfo.getWord());
+
         return new Packet<>("startGameSuccess","", gameInfo.getWord().length());
     }
 
@@ -48,14 +50,14 @@ public class Room {
             playerOrder.add(
                     playerOrder.poll()
             );
-            gameInfo.setChangeTurn(true);
         }
 
         gameInfo.setCurrentPlayer(
                 playerOrder.peek()
         );
+        gameInfo.setChangeTurn(true);
 
-        return new Packet("startTurn","", gameInfo.getCurrentPlayer());
+        return new Packet("startTurn", gameInfo.getCurrentPlayer(), String.valueOf(gameInfo.getTurnScore()));
     }
 
     public Packet getWordDescription() {
@@ -67,17 +69,22 @@ public class Room {
     }
 
     public Packet makeTurn(Packet packet) {
+
+        LOGGER.info("Got " + packet);
+
+        if (!packet.getToken().equals(gameInfo.getCurrentPlayer()))
+            return new Packet("gameTurnError","","");
         gameService.gameMove(
                 gameInfo,
                 packet.getToken(),
                 packet.getData()
         );
-        if (gameInfo.getWinner().equals(gameInfo.getCurrentPlayer())) {
+        if (gameInfo.getCurrentPlayer().equals(gameInfo.getWinner())) {
             gameService.finishedGame(gameInfo);
             return new Packet("gameOver", "", "");
         }
         else
-            return nextTurn();
+            return new Packet("gameTurnSuccess","","");
     }
 
     public void addPlayer(String token) {

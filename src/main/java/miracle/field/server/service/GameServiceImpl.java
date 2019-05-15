@@ -31,6 +31,7 @@ public class GameServiceImpl implements GameService<MiracleFieldInfo> {
     @Override
     public void startGame(Collection<String> players,
                           MiracleFieldInfo gameInfo) {
+        gameInfo.setCurrentPlayer(players.iterator().next());
         Word word = wordRepository.getRandomWord();
         gameInfo.setWord(word);
     }
@@ -56,6 +57,7 @@ public class GameServiceImpl implements GameService<MiracleFieldInfo> {
         if (!word.contains(data)) {
             gameInfo.setChangeTurn(false);
             gameInfo.setOpenLetters((word + data).toCharArray());
+            gameInfo.updatePlayerScore(currentPlayer, gameInfo.getChangeTurnScore());
         }
 
         if (Arrays.equals(gameInfo.getWord().toCharArray(),(word + data).toCharArray()) ||
