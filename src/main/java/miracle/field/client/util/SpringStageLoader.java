@@ -41,12 +41,12 @@ public class SpringStageLoader implements ApplicationContextAware {
 
     public Stage loadFirstScene() throws IOException {
         Stage stage = new Stage();
-        Scene mainScene = loadScene(SIGN_IN_SCENE, null);
+        Scene firstScene = loadScene(SIGN_IN_SCENE, null);
         stage.setOnCloseRequest(we -> {
             staticContext.getBean(WebSocketClient.class).close();
             stage.close();
         });
-        stage.setScene(mainScene);
+        stage.setScene(firstScene);
         stage.setTitle(TITLE);
         return stage;
     }
