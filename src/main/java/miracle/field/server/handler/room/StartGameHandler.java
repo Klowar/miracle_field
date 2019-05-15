@@ -33,7 +33,13 @@ public class StartGameHandler extends BaseRoomHandler {
         if (!room.isOpen()) {
             try {
                 returnPacket = room.startGame();
+
+                LOGGER.info("Start room " + returnPacket);
+
                 for (String token : room.getUsers()) {
+                    if(token.equals(message.getToken())) {
+                        continue;
+                    }
                     server.getUserByToken(token).send(
                             getMapper().writeValueAsBytes(returnPacket)
                     );

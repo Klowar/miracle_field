@@ -10,7 +10,7 @@
         <BorderPane>
             <left>
                 <StackPane styleClass="main_btns_pane">
-                    <Button text="Назвать слово!"/>
+                    <Button text="Назвать слово!" onAction="#openCallWordWindow"/>
                 </StackPane>
             </left>
             <center>
@@ -34,8 +34,6 @@
                         <AlphabetPane fx:id="alphabetPane"/>
                     </bottom>
                 </BorderPane>
-
-
             </bottom>
         </BorderPane>
     </left>
