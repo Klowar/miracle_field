@@ -1,0 +1,12 @@
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="miracle.field.client.controller.CallWordController" minWidth="400">
+    <center>
+        <TextField fx:id="wordF"/>
+    </center>
+    <right>
+        <Button onMouseClicked="#callWord" text="Назвать слово"/>
+    </right>
+</BorderPane>

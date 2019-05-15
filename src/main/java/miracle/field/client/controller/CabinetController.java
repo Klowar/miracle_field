@@ -15,8 +15,6 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 public class CabinetController extends AbstractFxmlController {
-    private User user;
-
     @FXML
     private Label username;
     @FXML
@@ -29,9 +27,11 @@ public class CabinetController extends AbstractFxmlController {
     private Label score;
 
     private void seTextUsername(){
+        User user = (User) personalMap.get("user");
         username.setText(user.getUsername());
     }
-    private void seStatistic(){
+    private void seStatistic() {
+        User user = (User) personalMap.get("user");
         Statistic statistic = user.getStatistic();
         wins.setText(String.valueOf(statistic.getWins()));
         loses.setText(String.valueOf(statistic.getLoses()));
@@ -41,13 +41,7 @@ public class CabinetController extends AbstractFxmlController {
 
     @Override
     public void initData(Map<String, Object> data){
-        User user = (User) data.get("user");
-        if(user == null){
-            //TODO
-        }
-        else {
-            setUser(user);
-        }
+        super.initData(data);
     }
 
     @FXML
