@@ -5,11 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import miracle.field.server.gameData.MiracleFieldInfo;
 import miracle.field.server.service.GameService;
 import miracle.field.shared.packet.Packet;
-import org.java_websocket.WebSocket;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.logging.Logger;
 
 public class Room {
 
@@ -23,6 +21,8 @@ public class Room {
 
     private Queue<String> playerOrder;
 
+    private final Logger LOGGER = Logger.getLogger(Room.class.getName());
+
     public Room(Integer id,
                 ObjectMapper mapper,
                 GameService gameService) {
@@ -30,7 +30,7 @@ public class Room {
         this.mapper = mapper;
         this.gameService = gameService;
 
-        playerOrder = new PriorityQueue<>();
+        playerOrder = new LinkedList<>();
         open = true;
     }
 
@@ -39,6 +39,8 @@ public class Room {
         gameInfo = new MiracleFieldInfo(new HashSet<>(playerOrder));
 
         gameService.startGame(playerOrder, gameInfo);
+
+        LOGGER.info("Game started. Word is " + gameInfo.getWord());
 
         return new Packet<>("startGameSuccess","", gameInfo.getWord().length());
     }
@@ -67,6 +69,9 @@ public class Room {
     }
 
     public Packet makeTurn(Packet packet) {
+
+        LOGGER.info("Got " + packet);
+
         if (!packet.getToken().equals(gameInfo.getCurrentPlayer()))
             return new Packet("gameTurnError","","");
         gameService.gameMove(

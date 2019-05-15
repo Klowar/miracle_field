@@ -7,10 +7,13 @@ import miracle.field.shared.packet.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.logging.Logger;
+
 @Component
 public class GameTurnHandler extends BaseRoomHandler {
 
     private final SimpleServer server;
+    private final Logger LOGGER = Logger.getLogger(GameTurnHandler.class.getName());
 
     @Autowired
     public GameTurnHandler(SimpleServer server) {
@@ -29,6 +32,9 @@ public class GameTurnHandler extends BaseRoomHandler {
         );
 
         returnPacket = room.makeTurn(message);
+
+        LOGGER.info("Room status: " + returnPacket.getType());
+
         if (returnPacket.getType().equals("gameOver")) {
             try {
                 for (String s : room.getUsers()) {
@@ -48,6 +54,9 @@ public class GameTurnHandler extends BaseRoomHandler {
             if (returnPacket.getToken().equals(type + "Error"))
                 return returnPacket;
             Packet nextPlayer = room.nextTurn();
+
+            LOGGER.info("Next Player : " + nextPlayer.getToken() + " Score: " +  nextPlayer.getData());
+
             if (nextPlayer.getToken().equals(message.getToken()))
                 returnPacket = nextPlayer;
             else
@@ -56,7 +65,7 @@ public class GameTurnHandler extends BaseRoomHandler {
                             getMapper().writeValueAsBytes(nextPlayer)
                     );
                 } catch (JsonProcessingException e) {
-                    e.printStackTrace();
+                   LOGGER.severe("ERROR TURN GAME");
                 }
         }
 

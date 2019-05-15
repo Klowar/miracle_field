@@ -96,7 +96,7 @@ public class SimpleServer extends WebSocketServer implements ApplicationContextA
                     )
             );
         } catch (JsonProcessingException e) {
-            System.out.println("Can     not convert error packet to " + conn.getRemoteSocketAddress());
+            System.out.println("Can not convert error packet to " + conn.getRemoteSocketAddress());
         }
     }
 
