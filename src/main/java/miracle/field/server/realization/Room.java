@@ -48,14 +48,14 @@ public class Room {
             playerOrder.add(
                     playerOrder.poll()
             );
-            gameInfo.setChangeTurn(true);
         }
 
         gameInfo.setCurrentPlayer(
                 playerOrder.peek()
         );
+        gameInfo.setChangeTurn(true);
 
-        return new Packet("startTurn","", gameInfo.getCurrentPlayer());
+        return new Packet("startTurn", gameInfo.getCurrentPlayer(), String.valueOf(gameInfo.getTurnScore()));
     }
 
     public Packet getWordDescription() {
@@ -67,17 +67,19 @@ public class Room {
     }
 
     public Packet makeTurn(Packet packet) {
+        if (!packet.getToken().equals(gameInfo.getCurrentPlayer()))
+            return new Packet("gameTurnError","","");
         gameService.gameMove(
                 gameInfo,
                 packet.getToken(),
                 packet.getData()
         );
-        if (gameInfo.getWinner().equals(gameInfo.getCurrentPlayer())) {
+        if (gameInfo.getCurrentPlayer().equals(gameInfo.getWinner())) {
             gameService.finishedGame(gameInfo);
             return new Packet("gameOver", "", "");
         }
         else
-            return nextTurn();
+            return new Packet("gameTurnSuccess","","");
     }
 
     public void addPlayer(String token) {
