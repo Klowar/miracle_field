@@ -6,12 +6,15 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import lombok.NoArgsConstructor;
 import miracle.field.client.util.Observer;
+import miracle.field.client.util.Waiter;
 import miracle.field.shared.model.User;
 import miracle.field.shared.packet.Packet;
 import org.java_websocket.client.WebSocketClient;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @NoArgsConstructor
@@ -26,39 +29,30 @@ public class SignUpController extends AbstractFxmlController {
         tempUser.setUsername(user.getText());
         tempUser.setPassword(password.getText());
         tempUser.setConfirmPassword(confirmPassword.getText());
+        sign(tempUser);
+    }
 
-        try {
-            getContext().getBean(WebSocketClient.class).send(
-                    getContext().getBean(ObjectMapper.class).writeValueAsBytes(
-                            new Packet<>("signUp", "", tempUser)
-                    )
-            );
-            getContext().getBean(Observer.class).addWaiter("signUpSuccess", this);
-            getContext().getBean(Observer.class).addWaiter("signUpError", this);
-        } catch (IOException e) {
-            System.out.println("Can not write SignUp packet to server");
-        }
-        System.out.println("SignUp packet sent...");
+    private void sign(User tempUser){
+        sendPacket("signUp", "", tempUser);
+        addWaiter("signUpSuccess");
+        addWaiter("signUpError");
+
     }
 
     @Override
     public void getNotify(Packet packet) {
         switch (packet.getType()) {
             case "signUpSuccess":
-//                TODO go to main window
-                getContext().getBean(Observer.class).removeWaiter("signUpSuccess", this);
+                removeWaiter("signUpSuccess");
+                removeWaiter("signUpError");
                 break;
             case "signUpError":
 //                TODO show error hint
-                getContext().getBean(Observer.class).removeWaiter("signUpError", this);
+
                 break;
             default:
                 return;
         }
     }
 
-    @FXML
-    public void initialize() {
-        super.initialize();
-    }
 }

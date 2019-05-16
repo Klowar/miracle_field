@@ -1,6 +1,5 @@
 package miracle.field.client.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,19 +10,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import miracle.field.client.gui.panes.AlphabetPane;
 import miracle.field.client.gui.panes.RoulettePane;
 import miracle.field.client.util.SpringStageLoader;
-import miracle.field.client.util.Waiter;
 import miracle.field.shared.packet.Packet;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 @Component
 @Data
+@NoArgsConstructor
 public class MainController extends AbstractFxmlController {
     private final String CALL_WORD_STAGE_TITLE = "Назовите слово";
     @FXML
@@ -35,23 +34,25 @@ public class MainController extends AbstractFxmlController {
     @FXML
     private TextArea wordDescriptionArea;
 
-    public MainController() {
-    }
-
     @Override
     public void getNotify(Packet packet) {
         switch (packet.getType()) {
-            case "roomWordDescription":
-                HashMap<String, Waiter> removeWaitersMap = new HashMap<>();
-                removeWaitersMap.put("roomWordDescription", this);
-                helper.removeWaiters(removeWaitersMap);
+            case "startGameSuccess":
+                removeWaiter("startGameSuccess");
+                removeWaiter("startGameError");
+                Platform.runLater(() -> {
+                    waitDescription();
+                });
+                break;
+            case "roomWordDescriptionSuccess":
+                removeWaiter("roomWordDescriptionSuccess");
+                removeWaiter("roomWordDescriptionError");
+
                 Platform.runLater(() -> {
                     wordDescriptionArea.setText(packet.getData());
                 });
                 break;
-            case "":
-//
-                break;
+
             default:
                 return;
         }
@@ -79,46 +80,38 @@ public class MainController extends AbstractFxmlController {
 
     @FXML
     public void initialize() {
-        super.initialize();
-        sendStartGamePacket();
-        sendRoomWordDescriptionPacket();
         Platform.runLater(() -> {
-            ObservableList<Node> alphabetPaneChildren = alphabetPane.getChildren();
-            for (Node node : alphabetPaneChildren) {
-                if (node.getClass().equals(Button.class)) {
-                    Button button = (Button) node;
-                    button.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                        chooseLetter(button.getText());
-                    });
-                }
-            }
+            startGame();
+            addActions();
         });
     }
 
     private void chooseLetter(String letter) {
         String token = (String) personalMap.get("token");
-        helper.sendPacket("gameTurn", token, letter);
+        sendPacket("gameTurn", token, letter);
     }
 
-    private void sendStartGamePacket() {
-        helper.sendPacket("startGame", (String) personalMap.get("token"), null);
-        Map<String, Waiter> addWaitersMap = new HashMap<>();
-        addWaitersMap.put("startGameSuccess", this);
-        addWaitersMap.put("startGameError", this);
-        helper.addWaiters(addWaitersMap);
+    private void startGame() {
+        sendPacket("startGame", (String) personalMap.get("token"), null);
+        addWaiter("startGameSuccess");
+        addWaiter("startGameError");
     }
 
-    private void sendRoomWordDescriptionPacket() {
-        helper.sendPacket("roomWordDescription", (String) personalMap.get("token"), null);
-        Map<String, Waiter> addWaitersMap = new HashMap<>();
-        addWaitersMap.put("roomWordDescriptionSuccess", this);
-        addWaitersMap.put("roomWordDescriptionError", this);
-        helper.addWaiters(addWaitersMap);
+    private void waitDescription() {
+        sendPacket("roomWordDescription", (String) personalMap.get("token"), null);
+        addWaiter("roomWordDescriptionSuccess");
+        addWaiter("roomWordDescriptionError");
     }
 
-
-    @Override
-    public void initData(Map<String, Object> data) {
-        super.initData(data);
+    private void addActions() {
+        ObservableList<Node> alphabetPaneChildren = alphabetPane.getChildren();
+        for (Node node : alphabetPaneChildren) {
+            if (node.getClass().equals(Button.class)) {
+                Button button = (Button) node;
+                button.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                    chooseLetter(button.getText());
+                });
+            }
+        }
     }
 }

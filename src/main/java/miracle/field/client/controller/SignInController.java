@@ -11,10 +11,8 @@ import javafx.stage.Stage;
 import lombok.NoArgsConstructor;
 import miracle.field.client.util.Observer;
 import miracle.field.client.util.SpringStageLoader;
-import miracle.field.client.util.Waiter;
 import miracle.field.shared.model.User;
 import miracle.field.shared.packet.Packet;
-import org.java_websocket.client.WebSocketClient;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -38,7 +36,8 @@ public class SignInController extends AbstractFxmlController {
     public void getNotify(Packet packet) {
         switch (packet.getType()) {
             case "loginSuccess":
-                getContext().getBean(Observer.class).removeWaiter("loginSuccess", this);
+                removeWaiter("loginSuccess");
+                removeWaiter("loginError");
                 Platform.runLater(() -> {
                     try {
                         User user = (User) packet.getData(User.class);
@@ -52,7 +51,6 @@ public class SignInController extends AbstractFxmlController {
                 break;
             case "loginError":
 //                TODO show error hint
-                getContext().getBean(Observer.class).removeWaiter("loginError", this);
                 break;
             default:
                 return;
@@ -64,11 +62,9 @@ public class SignInController extends AbstractFxmlController {
         User tempUser = new User();
         tempUser.setUsername(user.getText());
         tempUser.setPassword(password.getText());
-        helper.sendPacket("login", "", tempUser);
-        Map<String, Waiter> addWaitersMap = new HashMap<>();
-        addWaitersMap.put("loginSuccess", this);
-        addWaitersMap.put("loginError", this);
-        helper.addWaiters(addWaitersMap);
+        sendPacket("login", "", tempUser);
+        addWaiter("loginSuccess");
+        addWaiter("loginError");
     }
 
     @FXML
@@ -89,9 +85,6 @@ public class SignInController extends AbstractFxmlController {
         stage.setScene(cabinetScene);
         stage.show();
     }
-    @FXML
-    public void initialize() {
-        super.initialize();
-    }
+
 
 }

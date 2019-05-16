@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import miracle.field.client.util.SpringStageLoader;
-import miracle.field.client.util.Waiter;
 import miracle.field.shared.model.Statistic;
 import miracle.field.shared.model.User;
 import miracle.field.shared.packet.Packet;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 @Component
 @Data
@@ -48,14 +46,9 @@ public class CabinetController extends AbstractFxmlController {
         score.setText(String.valueOf(statistic.getScore()));
     }
 
-    @Override
-    public void initData(Map<String, Object> data) {
-        super.initData(data);
-    }
 
     @FXML
     public void initialize() {
-        super.initialize();
         Platform.runLater(() -> {
             seTextUsername();
             seStatistic();
@@ -66,25 +59,24 @@ public class CabinetController extends AbstractFxmlController {
     @Override
     public void getNotify(Packet packet) {
         if (packet.getType().equals("findRoomSuccess")) {
-            Map<String, Waiter> addWaitersMap = new HashMap<>();
-            addWaitersMap.put("findRoomSuccess", this);
-            addWaitersMap.put("findRoomError", this);
-            helper.addWaiters(addWaitersMap);
             Platform.runLater(() -> {
-                try {
-                    mainSceneLoad();
-                } catch (IOException e) {
-                    //TODO
-                }
+                mainSceneLoad();
             });
+            removeWaiter("findRoomSuccess");
+            removeWaiter("findRoomError");
         } else if (packet.getType().equals("findRoomError")) {
             System.out.println("И как ты это сделал???? " + packet.getData());
         }
     }
 
-    private void mainSceneLoad() throws IOException {
+    private void mainSceneLoad()  {
         Stage stage = (Stage) username.getScene().getWindow();
-        Scene mainScene = getContext().getBean(SpringStageLoader.class).loadScene(MAIN_SCENE, new HashMap<>());
+        Scene mainScene = null;
+        try {
+            mainScene = getContext().getBean(SpringStageLoader.class).loadScene(MAIN_SCENE, new HashMap<>());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         stage.setScene(mainScene);
         stage.show();
     }
@@ -95,11 +87,9 @@ public class CabinetController extends AbstractFxmlController {
     }
 
     private void sendFindRoomPacket() {
-        helper.sendPacket("findRoom", (String) personalMap.get("token"), null);
-        Map<String, Waiter> addWaitersMap = new HashMap<>();
-        addWaitersMap.put("findRoomSuccess", this);
-        addWaitersMap.put("findRoomError", this);
-        helper.addWaiters(addWaitersMap);
+        sendPacket("findRoom", (String) personalMap.get("token"), null);
+        addWaiter("findRoomSuccess");
+        addWaiter("findRoomError");
     }
 
 }

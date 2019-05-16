@@ -20,15 +20,9 @@ public class CallWordController extends AbstractFxmlController {
     public void getNotify(Packet packet) {
 
     }
-    @FXML
-    public void initialize() {
-        super.initialize();
-    }
 
     @FXML
     private void callWord() {
-        String word = wordF.getText();
-        String token = (String) personalMap.get("token");
-        helper.sendPacket("gameTurn", token, word);
+        sendPacket("gameTurn", (String) personalMap.get("token"), wordF.getText());
     }
 }

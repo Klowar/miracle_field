@@ -32,8 +32,8 @@ public class SpringStageLoader implements ApplicationContextAware {
         Scene scene = new Scene(loader.load());
         scene.getStylesheets().add("style/style.css");
         AbstractFxmlController controller = loader.getController();
-        data.putAll(staticMap);
         controller.initData(data);
+        controller.getPersonalMap().putAll(staticMap);
         return scene;
     }
 
