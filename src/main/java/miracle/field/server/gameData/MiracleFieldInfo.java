@@ -14,16 +14,17 @@ public class MiracleFieldInfo extends GameInfo {
     @JsonCreator
     public MiracleFieldInfo(
             @JsonProperty("openLetters") Set<Character> openLetters,
-            @JsonProperty("changeTurnScore") int changeTurnScore){
+            @JsonProperty("changeTurnScore") int changeTurnScore,
+            @JsonProperty("word") Word word
+            ){
         this.openLetters = openLetters;
         this.changeTurnScore = changeTurnScore;
-
+        this.word = word;
     }
 
     @JsonIgnore
     private Queue<Long> turnScore;
 
-    @JsonIgnore
     private Word word;
 
     private Set<Character> openLetters;
@@ -56,8 +57,8 @@ public class MiracleFieldInfo extends GameInfo {
         this.changeTurn = true;
     }
 
-    public String getWord() {
-        return word.getWord();
+    public Word getWord() {
+        return word;
     }
 
     @JsonIgnore

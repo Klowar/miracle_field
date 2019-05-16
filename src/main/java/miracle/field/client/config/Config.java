@@ -27,8 +27,7 @@ public class Config {
     @Bean
     public WebSocketClient connector() throws URISyntaxException {
         WebSocketClient client = new WebSocketServerConnector(
-                new URI("ws://192.168.43.135:8080")
-        );
+                new URI("ws://localhost:55443"));
         client.connect();
         return client;
     }

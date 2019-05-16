@@ -61,14 +61,14 @@ public class GameServiceImpl implements GameService<MiracleFieldInfo> {
 
         Set<Character> word = gameInfo.getOpenLetters();
 
-        if (!word.contains(data) && gameInfo.getWord().contains(data)) {
+        if (!word.contains(data) && gameInfo.getWord().getWord().contains(data)) {
             gameInfo.setChangeTurn(false);
             stringToSet(data, gameInfo.getOpenLetters());
             gameInfo.updatePlayerScore(currentPlayer, gameInfo.getChangeTurnScore());
         }
 
-        if (stringToSet(gameInfo.getWord(), null).equals(word) ||
-            Arrays.equals(gameInfo.getWord().toCharArray(), data.toCharArray())) {
+        if (stringToSet(gameInfo.getWord().getWord(), null).equals(word) ||
+            Arrays.equals(gameInfo.getWord().getWord().toCharArray(), data.toCharArray())) {
             gameInfo.setWinner(player);
         }
 
