@@ -14,7 +14,7 @@ public class MiracleFieldInfo extends GameInfo {
     @JsonCreator
     public MiracleFieldInfo(
             @JsonProperty("openLetters") Set<Character> openLetters,
-            @JsonProperty("changeTurnScore") Long changeTurnScore){
+            @JsonProperty("changeTurnScore") int changeTurnScore){
         this.openLetters = openLetters;
         this.changeTurnScore = changeTurnScore;
 
@@ -40,7 +40,7 @@ public class MiracleFieldInfo extends GameInfo {
     @JsonIgnore
     private String currentPlayer;
 
-    private Long changeTurnScore;
+    private int changeTurnScore;
 
     public MiracleFieldInfo(Set<String> playersTokens) {
         final int MAX_TURN_AMOUNT = 32;
@@ -110,7 +110,7 @@ public class MiracleFieldInfo extends GameInfo {
     }
 
 
-    public Long getTurnScore() {
+    public int getTurnScore() {
         return changeTurnScore;
     }
 

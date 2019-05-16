@@ -14,6 +14,9 @@ import javafx.scene.text.TextBoundsType;
 import javafx.util.Duration;
 import lombok.Data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Data
 public class RoulettePane extends Pane {
     private Ellipse centerOfRoulette;
@@ -21,11 +24,23 @@ public class RoulettePane extends Pane {
     private Sector[] sectors;
     private Timeline timeline;
     private final String[] textStrings = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+    private final Map<Integer, Integer> scores = new HashMap<>();
+    private int start = 0;
 
     public RoulettePane() {
         centerOfRoulette = new Ellipse(200, 200, 10, 10);
         sectors = createRouletteSectors();
         addElements();
+        initScores();
+    }
+
+    private void initScores() {
+        // :(((
+        int start = 15;
+        for(int i = 1; i <= 12; i++) {
+           scores.put(i, start);
+           start += 30;
+        }
     }
 
     private Sector[] createRouletteSectors() {
@@ -50,9 +65,9 @@ public class RoulettePane extends Pane {
     public void spinRoulette(int count) {
         double milliseconds = 3;
         timeline = new Timeline(new KeyFrame(Duration.millis(milliseconds), e -> spin()));
-        timeline.setCycleCount(360 + count);
+        timeline.setCycleCount(630 - scores.get(count) + start);
+        start =  scores.get(count) - 270 ;
         timeline.play();
-
     }
 
     private void spin() {
