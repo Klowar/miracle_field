@@ -14,9 +14,7 @@ public class WordDescriptionHandler extends BaseRoomHandler {
     @Override
     public Packet handle(Packet message) {
         if (!message.getType().equals(type))
-            nextHandler.handle(message);
-
-        Packet returnPacket = null;
+            return nextHandler.handle(message);
 
         if (getUserRoomId(message.getToken()) == null)
             return new Packet(type+"Error","","Game did not start");

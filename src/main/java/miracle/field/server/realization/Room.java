@@ -61,7 +61,7 @@ public class Room {
     }
 
     public Packet getWordDescription() {
-        return new Packet("roomWordDescription","", gameInfo.getWordDescription());
+        return new Packet("roomWordDescriptionSuccess","", gameInfo.getWordDescription());
     }
 
     public Collection<String> getUsers() {
@@ -90,7 +90,7 @@ public class Room {
     public void addPlayer(String token) {
         if (open) {
             playerOrder.add(token);
-            if (playerOrder.size() > 3)
+            if (playerOrder.size() > 0)
                 open = false;
         }
     }

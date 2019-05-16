@@ -24,7 +24,7 @@ public class StartGameHandler extends BaseRoomHandler {
     @Override
     public Packet handle(Packet message) {
         if (!message.getType().equals(type)) {
-            nextHandler.handle(message);
+            return nextHandler.handle(message);
         }
         Room room = getRoomById(
                 getUserRoomId(message.getToken())
