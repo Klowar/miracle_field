@@ -74,6 +74,7 @@ public class MainController extends AbstractFxmlController {
                         LOGGER.severe("Can not get game info from packet: " + packet);
                     }
                 }
+                break;
             case "roomChat":
                 roomChat.setText(
                         roomChat.getText() + "\n" + packet.getData()

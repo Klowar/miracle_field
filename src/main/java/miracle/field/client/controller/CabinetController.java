@@ -58,14 +58,17 @@ public class CabinetController extends AbstractFxmlController {
 
     @Override
     public void getNotify(Packet packet) {
-        if (packet.getType().equals("findRoomSuccess")) {
-            Platform.runLater(() -> {
-                mainSceneLoad();
-            });
-            removeWaiter("findRoomSuccess");
-            removeWaiter("findRoomError");
-        } else if (packet.getType().equals("findRoomError")) {
-            System.out.println("И как ты это сделал???? " + packet.getData());
+        switch (packet.getType()){
+            case "findRoomError":
+            case "findRoomSuccess":
+                Platform.runLater(() -> {
+                    mainSceneLoad();
+                });
+                removeWaiter("findRoomSuccess");
+                removeWaiter("findRoomError");
+                break;
+            default:
+                break;
         }
     }
 
