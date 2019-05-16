@@ -37,12 +37,13 @@ public class StartGameHandler extends BaseRoomHandler {
                 LOGGER.info("Start room " + returnPacket);
 
                 for (String token : room.getUsers()) {
-                    if(token.equals(message.getToken())) {
+                    if(token.equals(message.getToken()))
                         continue;
-                    }
-                    server.getUserByToken(token).send(
-                            getMapper().writeValueAsBytes(returnPacket.createPacketWithoutToken())
-                    );
+
+                    if (server.getUserByToken(token).isOpen())
+                        server.getUserByToken(token).send(
+                                getMapper().writeValueAsBytes(returnPacket.createPacketWithoutToken())
+                        );
                 }
             } catch (JsonProcessingException e) {
                 LOGGER.severe("Can not start game");

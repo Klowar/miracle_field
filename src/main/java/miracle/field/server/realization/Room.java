@@ -42,7 +42,7 @@ public class Room {
 
         LOGGER.info("Game started. Word is " + gameInfo.getWord());
 
-        return new Packet<>("startGameSuccess",gameInfo.getCurrentPlayer(), gameInfo.getWord().length());
+        return new Packet<>("startGameSuccess", gameInfo.getCurrentPlayer(), gameInfo);
     }
 
     public Packet nextTurn() throws JsonProcessingException {
@@ -92,7 +92,7 @@ public class Room {
     public void addPlayer(String token) {
         if (open) {
             playerOrder.add(token);
-            if (playerOrder.size() > 0)
+            if (playerOrder.size() > 2)
                 open = false;
         }
     }

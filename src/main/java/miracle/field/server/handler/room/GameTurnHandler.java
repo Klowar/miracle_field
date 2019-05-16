@@ -62,9 +62,10 @@ public class GameTurnHandler extends BaseRoomHandler {
             for (String s : users) {
                 if (s.equals(message.getToken()))
                     continue;
-                server.getUserByToken(s).send(
-                        getMapper().writeValueAsBytes(returnPacket.createPacketWithoutToken())
-                );
+                if (server.getUserByToken(s).isOpen())
+                    server.getUserByToken(s).send(
+                            getMapper().writeValueAsBytes(returnPacket.createPacketWithoutToken())
+                    );
             }
 
         } catch (JsonProcessingException e) {
