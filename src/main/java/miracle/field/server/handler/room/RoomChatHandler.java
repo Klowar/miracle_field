@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ChatRoomHandler extends BaseRoomHandler {
+public class RoomChatHandler extends BaseRoomHandler {
 
     private final SimpleServer server;
     private final UserService service;
 
     @Autowired
-    public ChatRoomHandler(SimpleServer server, UserService userService) {
+    public RoomChatHandler(SimpleServer server, UserService userService) {
         this.type = "roomChat";
         this.server = server;
         this.service = userService;
@@ -26,29 +26,35 @@ public class ChatRoomHandler extends BaseRoomHandler {
         if (!message.getType().equals(type))
             return nextHandler.handle(message);
 
-        Packet returnPacket = new Packet(type + "Error", "","");
-        System.out.println(getRooms());
+        Packet returnPacket = new Packet(type + "Error", "","You do not have room");
         Room room = this.getRoomById(
                 getUserRoomId(message.getToken())
         );
-
-        try {
-            returnPacket = new Packet(
-                    message.getType(),
-                    "",
-                    service.getAuthorizedUser(message.getToken()).getUsername()+message.getSerializedData()
-            );
-
-            for (String token : room.getUsers()) {
-                if (token.equals(message.getToken()))
-                    continue;
-                server.getUserByToken(token).send(
-                        getMapper().writeValueAsBytes(returnPacket)
-                );
-            }
+        if (room == null)
             return returnPacket;
-        } catch (JsonProcessingException e) {
-            System.out.println("Can not write packet to room: " +  message.getType());
+
+        returnPacket = new Packet(
+                message.getType(),
+                "",
+                service.getAuthorizedUser(
+                        message.getToken()).getUsername()
+                        + ": "
+                        + message.getSerializedData()
+                );
+
+        for (String token : room.getUsers()) {
+            if (token.equals(message.getToken()))
+                continue;
+            try {
+                if (server.getUserByToken(token).isOpen())
+                    server.getUserByToken(token).send(
+                        getMapper().writeValueAsBytes(returnPacket)
+                    );
+                else
+                    continue;
+            } catch (JsonProcessingException e) {
+                continue;
+            }
         }
 
         return returnPacket;

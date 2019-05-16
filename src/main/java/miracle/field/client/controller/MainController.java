@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -14,16 +15,12 @@ import lombok.NoArgsConstructor;
 import miracle.field.client.gui.panes.AlphabetPane;
 import miracle.field.client.gui.panes.RoulettePane;
 import miracle.field.client.util.SpringStageLoader;
-import miracle.field.server.gameData.GameInfo;
 import miracle.field.server.gameData.MiracleFieldInfo;
 import miracle.field.server.handler.LoginHandler;
 import miracle.field.shared.packet.Packet;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -41,6 +38,10 @@ public class MainController extends AbstractFxmlController {
     private AlphabetPane alphabetPane;
     @FXML
     private TextArea wordDescriptionArea;
+    @FXML
+    private TextArea roomChat;
+    @FXML
+    private TextField newMessage;
 
     @Override
     public void getNotify(Packet packet) {
@@ -73,7 +74,11 @@ public class MainController extends AbstractFxmlController {
                         LOGGER.severe("Can not get game info from packet: " + packet);
                     }
                 }
-
+            case "roomChat":
+                roomChat.setText(
+                        roomChat.getText() + "\n" + packet.getData()
+                );
+                break;
             default:
                 return;
         }
@@ -104,6 +109,11 @@ public class MainController extends AbstractFxmlController {
     }
 
     @FXML
+    public void sendMessage() {
+        sendPacket("roomChat", (String) personalMap.get("token"), newMessage.getText());
+    }
+
+    @FXML
     public void initialize() {
         Platform.runLater(() -> {
             startGame();
@@ -120,6 +130,7 @@ public class MainController extends AbstractFxmlController {
         sendPacket("startGame", (String) personalMap.get("token"), null);
         addWaiter("startGameSuccess");
         addWaiter("startGameError");
+        addWaiter("roomChat");
     }
 
     private void waitDescription() {
