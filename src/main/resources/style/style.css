@@ -5,3 +5,34 @@
 .main_btns_pane {
     -fx-padding: 0 20 0 20;
 }
+
+.username {
+    -fx-font-weight: 800px;
+    -fx-font-size: 24;
+}
+
+.centered {
+    -fx-padding: 20 20 20 20;
+}
+
+.beautfull {
+    -fx-background-color: rgba(128, 128, 128, 0.6);
+}
+
+.beautfull_light {
+    -fx-background-color: rgba(192, 192, 192, 0.6);
+}
+
+.score{
+    -fx-font: 100px Tahoma;
+    -fx-stroke-width: 1;
+}
+
+.main_background {
+    -fx-background-color: rgba(128, 128, 192, 0.6);
+}
+
+.words {
+    -fx-font: 24px Tahoma;
+    -fx-stroke-width: 1;
+}

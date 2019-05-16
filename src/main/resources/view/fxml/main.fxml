@@ -5,9 +5,9 @@
 <?import miracle.field.client.gui.panes.RoulettePane?>
 <?import miracle.field.client.gui.panes.AlphabetPane?>
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="miracle.field.client.controller.MainController">
+            fx:controller="miracle.field.client.controller.MainController" styleClass="main_background">
     <left>
-        <BorderPane>
+        <BorderPane styleClass="">
             <left>
                 <StackPane styleClass="main_btns_pane">
                     <Button text="Назвать слово!" onAction="#openCallWordWindow"/>
@@ -36,10 +36,9 @@
                                 <TextArea fx:id="wordDescriptionArea" disable="true"/>
                             </top>
                             <bottom>
-                                <AlphabetPane fx:id="alphabetPane"/>
+                                <AlphabetPane fx:id="alphabetPane" styleClass="words"/>
                             </bottom>
                         </BorderPane>
-
                     </bottom>
                 </BorderPane>
             </bottom>
