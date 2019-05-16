@@ -42,10 +42,10 @@ public class Room {
 
         LOGGER.info("Game started. Word is " + gameInfo.getWord());
 
-        return new Packet<>("startGameSuccess","", gameInfo.getWord().length());
+        return new Packet<>("startGameSuccess",gameInfo.getCurrentPlayer(), gameInfo.getWord().length());
     }
 
-    public Packet nextTurn() {
+    public Packet nextTurn() throws JsonProcessingException {
         if (gameInfo.isChangeTurn()) {
             playerOrder.add(
                     playerOrder.poll()
@@ -57,7 +57,7 @@ public class Room {
         );
         gameInfo.setChangeTurn(true);
 
-        return new Packet("startTurn", gameInfo.getCurrentPlayer(), String.valueOf(gameInfo.getTurnScore()));
+        return new Packet("startTurn", gameInfo.getCurrentPlayer(), gameInfo);
     }
 
     public Packet getWordDescription() {
@@ -68,23 +68,25 @@ public class Room {
         return playerOrder;
     }
 
-    public Packet makeTurn(Packet packet) {
+    public Packet makeTurn(Packet packet) throws JsonProcessingException {
 
         LOGGER.info("Got " + packet);
 
         if (!packet.getToken().equals(gameInfo.getCurrentPlayer()))
-            return new Packet("gameTurnError","","");
+            return new Packet("gameTurnError", "", gameInfo);
+
         gameService.gameMove(
                 gameInfo,
                 packet.getToken(),
                 packet.getData()
         );
+
         if (gameInfo.getCurrentPlayer().equals(gameInfo.getWinner())) {
-            gameService.finishedGame(gameInfo);
-            return new Packet("gameOver", "", "");
+            return new Packet("gameOver", "", gameInfo);
         }
-        else
-            return new Packet("gameTurnSuccess","","");
+        else {
+            return new Packet("gameTurnSuccess","", gameInfo);
+        }
     }
 
     public void addPlayer(String token) {
