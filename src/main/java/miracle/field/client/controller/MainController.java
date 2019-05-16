@@ -116,6 +116,7 @@ public class MainController extends AbstractFxmlController {
     @FXML
     public void sendMessage() {
         sendPacket("roomChat", (String) personalMap.get("token"), newMessage.getText());
+        newMessage.clear();
     }
 
     @FXML
