@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 @Component
 @Data
@@ -31,6 +32,8 @@ public class CabinetController extends AbstractFxmlController {
     private Label gameTotal;
     @FXML
     private Label score;
+
+    private final Logger LOGGER = Logger.getLogger(CabinetController.class.getName());
 
     private void seTextUsername() {
         User user = (User) personalMap.get("user");
@@ -78,7 +81,7 @@ public class CabinetController extends AbstractFxmlController {
         try {
             mainScene = getContext().getBean(SpringStageLoader.class).loadScene(MAIN_SCENE, new HashMap<>());
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.severe("CAN NOT LOAD SCENE");
         }
         stage.setScene(mainScene);
         stage.show();

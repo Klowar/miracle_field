@@ -29,7 +29,6 @@ public class StatisticServiceImpl implements StatisticService {
         if (statisticCandidate.isPresent()) {
             return statisticCandidate.get();
         } else {
-//          ToDo: throw other exception
             throw new DataIntegrityViolationException("No such statistic");
         }
     }

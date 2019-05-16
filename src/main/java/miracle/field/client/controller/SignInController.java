@@ -18,12 +18,15 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @Component
 @NoArgsConstructor
 public class SignInController extends AbstractFxmlController {
     private static final String SIGN_UP_SCENE = "sign_up";
     private static final String CABINET_SCENE = "cabinet";
+
+    private final Logger LOGGER = Logger.getLogger(SignInController.class.getName());
 
     @FXML
     private TextField user;
@@ -45,7 +48,7 @@ public class SignInController extends AbstractFxmlController {
                         cabinetSceneLoad(user, token);
                     }
                     catch (IOException ex) {
-                        //TODO
+                        LOGGER.severe("CAN NOT GET PACKET");
                     }
                 });
                 break;

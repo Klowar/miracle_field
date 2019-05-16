@@ -1,20 +1,12 @@
 package miracle.field.client.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import lombok.NoArgsConstructor;
-import miracle.field.client.util.Observer;
-import miracle.field.client.util.Waiter;
 import miracle.field.shared.model.User;
 import miracle.field.shared.packet.Packet;
-import org.java_websocket.client.WebSocketClient;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 @NoArgsConstructor
