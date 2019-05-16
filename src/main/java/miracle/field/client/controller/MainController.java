@@ -14,16 +14,12 @@ import lombok.NoArgsConstructor;
 import miracle.field.client.gui.panes.AlphabetPane;
 import miracle.field.client.gui.panes.RoulettePane;
 import miracle.field.client.util.SpringStageLoader;
-import miracle.field.server.gameData.GameInfo;
 import miracle.field.server.gameData.MiracleFieldInfo;
 import miracle.field.server.handler.LoginHandler;
 import miracle.field.shared.packet.Packet;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -41,6 +37,8 @@ public class MainController extends AbstractFxmlController {
     private AlphabetPane alphabetPane;
     @FXML
     private TextArea wordDescriptionArea;
+
+    private int shift = 0;
 
     @Override
     public void getNotify(Packet packet) {
@@ -62,13 +60,13 @@ public class MainController extends AbstractFxmlController {
                 });
                 break;
             case "startTurn":
-                if(personalMap.get("token").equals(packet.getToken())) {
+                if (personalMap.get("token").equals(packet.getToken())) {
                     spinRouletteButton.setDisable(false);
                     System.out.println(packet.getData());
                     try {
                         MiracleFieldInfo info = (MiracleFieldInfo) packet.getData(MiracleFieldInfo.class);
-                        //TODO Merenaas
-                        System.out.println(info.getTurnScore());
+                        shift = info.getTurnScore();
+                        spinRouletteButton.setDisable(false);
                     } catch (IOException e) {
                         LOGGER.severe("Can not get game info from packet: " + packet);
                     }
@@ -79,6 +77,7 @@ public class MainController extends AbstractFxmlController {
         }
     }
 
+
     private void waitstartTurn() {
         sendPacket("gameTurn", (String) personalMap.get("token"), null);
         addWaiter("startTurn");
@@ -86,7 +85,8 @@ public class MainController extends AbstractFxmlController {
 
     @FXML
     public void spinRoulette() {
-            roulettePain.spinRoulette(15);
+        roulettePain.spinRoulette(shift);
+        spinRouletteButton.setDisable(true);
     }
 
     @FXML
