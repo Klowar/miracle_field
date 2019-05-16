@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -37,6 +38,10 @@ public class MainController extends AbstractFxmlController {
     private AlphabetPane alphabetPane;
     @FXML
     private TextArea wordDescriptionArea;
+    @FXML
+    private TextArea roomChat;
+    @FXML
+    private TextField newMessage;
 
     private int shift = 0;
 
@@ -71,7 +76,11 @@ public class MainController extends AbstractFxmlController {
                         LOGGER.severe("Can not get game info from packet: " + packet);
                     }
                 }
-
+            case "roomChat":
+                roomChat.setText(
+                        roomChat.getText() + "\n" + packet.getData()
+                );
+                break;
             default:
                 return;
         }
@@ -104,6 +113,11 @@ public class MainController extends AbstractFxmlController {
     }
 
     @FXML
+    public void sendMessage() {
+        sendPacket("roomChat", (String) personalMap.get("token"), newMessage.getText());
+    }
+
+    @FXML
     public void initialize() {
         Platform.runLater(() -> {
             startGame();
@@ -120,6 +134,7 @@ public class MainController extends AbstractFxmlController {
         sendPacket("startGame", (String) personalMap.get("token"), null);
         addWaiter("startGameSuccess");
         addWaiter("startGameError");
+        addWaiter("roomChat");
     }
 
     private void waitDescription() {

@@ -48,12 +48,12 @@
     <right>
         <BorderPane>
             <center>
-                <TextArea disable="true"/>
+                <TextArea fx:id="roomChat" disable="true"/>
             </center>
             <bottom>
                 <FlowPane>
-                    <TextField/>
-                    <Button text="Отправить"/>
+                    <TextField fx:id="newMessage"/>
+                    <Button onAction="#sendMessage" text="Отправить"/>
                 </FlowPane>
             </bottom>
         </BorderPane>
