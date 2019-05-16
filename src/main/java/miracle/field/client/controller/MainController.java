@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Data;
@@ -37,6 +38,8 @@ public class MainController extends AbstractFxmlController {
     @FXML
     private AlphabetPane alphabetPane;
     @FXML
+    private FlowPane securedWord;
+    @FXML
     private TextArea wordDescriptionArea;
     @FXML
     private TextArea roomChat;
@@ -64,6 +67,7 @@ public class MainController extends AbstractFxmlController {
                         MiracleFieldInfo info = (MiracleFieldInfo) packet.getData(MiracleFieldInfo.class);
                         score = info.getTurnScore();
                         word = info.getWord().getWord();
+                        Platform.runLater(()-> addButtons(info));
                     } catch (IOException e) {
                         LOGGER.severe("Can not get game info from packet: " + packet);
                     }
@@ -92,6 +96,19 @@ public class MainController extends AbstractFxmlController {
                 break;
             default:
                 return;
+        }
+    }
+
+    private void addButtons(MiracleFieldInfo packet) {
+        System.out.println(packet.getOpenLetters());
+        securedWord.getChildren().clear();
+        for (char temp : word.toCharArray()) {
+            TextField wordLetter = new TextField();
+            wordLetter.setDisable(true);
+            if (packet.getOpenLetters().contains(temp)) {
+                wordLetter.setText(String.valueOf(temp));
+            }
+            securedWord.getChildren().add(wordLetter);
         }
     }
 
