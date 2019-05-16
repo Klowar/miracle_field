@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 public class MainController extends AbstractFxmlController {
     private final Logger LOGGER = Logger.getLogger(LoginHandler.class.getName());
     private final String CALL_WORD_STAGE_TITLE = "Назовите слово";
+    private final String CABINET_SCENE = "cabinet";
     @FXML
     private RoulettePane roulettePain;
     @FXML
@@ -55,7 +56,7 @@ public class MainController extends AbstractFxmlController {
                 removeWaiter("startGameError");
                 Platform.runLater(() -> {
                     waitDescription();
-                    waitstartTurn();
+                    waitStartTurn();
                 });
             case "startTurn":
                 if (personalMap.get("token").equals(packet.getToken())) {
@@ -82,13 +83,13 @@ public class MainController extends AbstractFxmlController {
                 );
                 break;
             case "startTurnSuccess":
-                System.out.println("не угадал");
+                sendPacket("roomChat", (String) personalMap.get("token"), "Я угадал букву!");
                 break;
             case "startTurnError":
-                System.out.println("не его ход");
+                roomChat.setText("Сейчас не Ваш ход, господин!\n");
                 break;
             case "gameOver":
-                //игра окончена
+                gameOver();
                 break;
             default:
                 return;
@@ -96,15 +97,36 @@ public class MainController extends AbstractFxmlController {
     }
 
 
-    private void waitstartTurn() {
+    private void waitStartTurn() {
         addWaiter("startTurn");
         addWaiter("startTurnSuccess");
         addWaiter("startTurnError");
         addWaiter("gameOver");
     }
+    private void gameOver() {
+        removeWaiter("startTurn");
+        removeWaiter("startTurnSuccess");
+        removeWaiter("startTurnError");
+        removeWaiter("gameOver");
+        cabinetLoad();
+    }
+    private void cabinetLoad(){
+        Stage stage = (Stage) roulettePain.getScene().getWindow();
+        try {
+            stage.setScene(
+                    getContext().getBean(SpringStageLoader.class).loadScene(CABINET_SCENE, new HashMap<>())
+            );
+        } catch (IOException e) {
+            stage.close();
+        }
+    }
+
+
     private void checkWord(String word, char[] openLetters){
-        for(int i = 0; i < word.length(); i++) {
-           //TODO Merenaas
+        for(int i = 0; i < openLetters.length; i++) {
+            if(word.indexOf(openLetters[i]) != -1){
+                //TODO open this char
+            }
         }
     }
 
