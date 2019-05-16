@@ -14,8 +14,6 @@ public class Room {
     private Integer id;
     private boolean open;
 
-    private final ObjectMapper mapper;
-
     private GameService gameService;
     private MiracleFieldInfo gameInfo;
 
@@ -27,7 +25,6 @@ public class Room {
                 ObjectMapper mapper,
                 GameService gameService) {
         this.id = id;
-        this.mapper = mapper;
         this.gameService = gameService;
 
         playerOrder = new LinkedList<>();

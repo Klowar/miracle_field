@@ -4,15 +4,15 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.FlowPane?>
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-             fx:controller="miracle.field.client.controller.CabinetController" minWidth="400">
+             fx:controller="miracle.field.client.controller.CabinetController" minWidth="400" styleClass="beautfull">
     <center>
-        <FlowPane>
-            <Label fx:id="username"/>
-            <Button text="ИГРАТЬ" onMouseClicked="#searchGame"/>
+        <FlowPane orientation="VERTICAL">
+            <Label fx:id="username" styleClass="username,centered"/>
+            <Button text="ИГРАТЬ" onMouseClicked="#searchGame" styleClass="centered"/>
         </FlowPane>
     </center>
     <right>
-        <BorderPane>
+        <BorderPane styleClass="centered,beautfull_light">
             <top>
                 <Label>Статистика игры</Label>
             </top>
@@ -23,10 +23,10 @@
                     <Label GridPane.columnIndex="0" GridPane.rowIndex="2" text="Поражений: "/>
                     <Label GridPane.columnIndex="0" GridPane.rowIndex="3" text="Всего игр: "/>
 
-                    <Label fx:id="score" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                    <Label fx:id="wins" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                    <Label fx:id="loses" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                    <Label fx:id="gameTotal" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    <Label fx:id="score" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="score"/>
+                    <Label fx:id="wins" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="score"/>
+                    <Label fx:id="loses" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="score"/>
+                    <Label fx:id="gameTotal" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="score"/>
 
 
                 </GridPane>

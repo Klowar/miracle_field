@@ -1,13 +1,9 @@
 package miracle.field.server.service;
 
-import com.sun.xml.fastinfoset.util.CharArray;
-import com.sun.xml.fastinfoset.util.CharArrayArray;
 import miracle.field.server.gameData.MiracleFieldInfo;
-import miracle.field.server.repository.UserRepository;
 import miracle.field.server.repository.WordRepository;
 import miracle.field.shared.model.Statistic;
 import miracle.field.shared.model.Word;
-import org.hibernate.type.CharacterType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
