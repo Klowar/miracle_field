@@ -43,6 +43,8 @@ public class MainController extends AbstractFxmlController {
     @FXML
     private TextField newMessage;
 
+    private int shift = 0;
+
     @Override
     public void getNotify(Packet packet) {
         switch (packet.getType()) {
@@ -63,13 +65,13 @@ public class MainController extends AbstractFxmlController {
                 });
                 break;
             case "startTurn":
-                if(personalMap.get("token").equals(packet.getToken())) {
+                if (personalMap.get("token").equals(packet.getToken())) {
                     spinRouletteButton.setDisable(false);
                     System.out.println(packet.getData());
                     try {
                         MiracleFieldInfo info = (MiracleFieldInfo) packet.getData(MiracleFieldInfo.class);
-                        //TODO Merenaas
-                        System.out.println(info.getTurnScore());
+                        shift = info.getTurnScore();
+                        spinRouletteButton.setDisable(false);
                     } catch (IOException e) {
                         LOGGER.severe("Can not get game info from packet: " + packet);
                     }
@@ -85,6 +87,7 @@ public class MainController extends AbstractFxmlController {
         }
     }
 
+
     private void waitstartTurn() {
         sendPacket("gameTurn", (String) personalMap.get("token"), null);
         addWaiter("startTurn");
@@ -92,7 +95,8 @@ public class MainController extends AbstractFxmlController {
 
     @FXML
     public void spinRoulette() {
-            roulettePain.spinRoulette(15);
+        roulettePain.spinRoulette(shift);
+        spinRouletteButton.setDisable(true);
     }
 
     @FXML
