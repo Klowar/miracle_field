@@ -43,19 +43,31 @@ public class MainController extends AbstractFxmlController {
     @FXML
     private TextField newMessage;
 
-    private int shift = 0;
+    private int score = 0;
+    private  String word = "";
 
     @Override
     public void getNotify(Packet packet) {
         switch (packet.getType()) {
             case "startGameSuccess":
+                System.out.println("саксесс" + packet);
                 removeWaiter("startGameSuccess");
                 removeWaiter("startGameError");
                 Platform.runLater(() -> {
                     waitDescription();
                     waitstartTurn();
                 });
-
+            case "startTurn":
+                if (personalMap.get("token").equals(packet.getToken())) {
+                    spinRouletteButton.setDisable(false);
+                    try {
+                        MiracleFieldInfo info = (MiracleFieldInfo) packet.getData(MiracleFieldInfo.class);
+                        score = info.getTurnScore();
+                        word = info.getWord().getWord();
+                    } catch (IOException e) {
+                        LOGGER.severe("Can not get game info from packet: " + packet);
+                    }
+                }
                 break;
             case "roomWordDescriptionSuccess":
                 removeWaiter("roomWordDescriptionSuccess");
@@ -64,23 +76,19 @@ public class MainController extends AbstractFxmlController {
                     wordDescriptionArea.setText(packet.getData());
                 });
                 break;
-            case "startTurn":
-                if (personalMap.get("token").equals(packet.getToken())) {
-                    spinRouletteButton.setDisable(false);
-                    System.out.println(packet.getData());
-                    try {
-                        MiracleFieldInfo info = (MiracleFieldInfo) packet.getData(MiracleFieldInfo.class);
-                        shift = info.getTurnScore();
-                        spinRouletteButton.setDisable(false);
-                    } catch (IOException e) {
-                        LOGGER.severe("Can not get game info from packet: " + packet);
-                    }
-                }
-                break;
             case "roomChat":
                 roomChat.setText(
                         roomChat.getText() + "\n" + packet.getData()
                 );
+                break;
+            case "startTurnSuccess":
+                System.out.println("не угадал");
+                break;
+            case "startTurnError":
+                System.out.println("не его ход");
+                break;
+            case "gameOver":
+                //игра окончена
                 break;
             default:
                 return;
@@ -89,13 +97,21 @@ public class MainController extends AbstractFxmlController {
 
 
     private void waitstartTurn() {
-        sendPacket("gameTurn", (String) personalMap.get("token"), null);
         addWaiter("startTurn");
+        addWaiter("startTurnSuccess");
+        addWaiter("startTurnError");
+        addWaiter("gameOver");
     }
+    private void checkWord(String word, char[] openLetters){
+        for(int i = 0; i < word.length(); i++) {
+           //TODO Merenaas
+        }
+    }
+
 
     @FXML
     public void spinRoulette() {
-        roulettePain.spinRoulette(shift);
+        roulettePain.spinRoulette(score);
         spinRouletteButton.setDisable(true);
     }
 
