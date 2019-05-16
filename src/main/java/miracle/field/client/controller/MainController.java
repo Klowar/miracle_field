@@ -108,7 +108,8 @@ public class MainController extends AbstractFxmlController {
             modalStage.setY(parentStage.getY() + 100);
             modalStage.show();
         } catch (IOException e) {
-            //TODO
+            LOGGER.severe("CAN NOT OPEN CALL WORD WINDOW");
+            parentStage.close();
         }
 
     }

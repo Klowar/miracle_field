@@ -60,7 +60,6 @@ public class WebSocketServerConnector extends WebSocketClient {
 
         @Override
         public void onError(Exception ex) {
-            ex.printStackTrace();
             System.err.println("An error occurred:" + ex.getCause());
         }
 
