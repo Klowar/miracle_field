@@ -30,10 +30,13 @@
                             <Triangle/>
                         </StackPane>
                     </top>
+                    <center>
+                        <FlowPane fx:id="securedWord" styleClass="securedWord"/>
+                    </center>
                     <bottom>
                         <BorderPane>
                             <top>
-                                <TextArea fx:id="wordDescriptionArea" disable="true"/>
+                                <TextArea fx:id="wordDescriptionArea" disable="true" styleClass="words"/>
                             </top>
                             <bottom>
                                 <AlphabetPane fx:id="alphabetPane" styleClass="words"/>
