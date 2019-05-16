@@ -127,4 +127,76 @@ public class ServerRoomGameTurnTest {
         );
         Thread.sleep(2000);
     }
+
+    @Test
+    public void testGameOverInOneWord() throws JsonProcessingException, InterruptedException {
+        final String[] playerToken = new String[1];
+        Waiter waiter = System.out::println;
+        Waiter waiter1 = packet -> playerToken[0] = packet.getToken();
+        observer.addWaiter("startTurn", waiter);
+        observer.addWaiter("gameOver", waiter);
+        observer.addWaiter("messageError", waiter);
+        observer.addWaiter("startGameSuccess", waiter1);
+        observer.addWaiter("startGameSuccess", waiter);
+
+        observer.addWaiter("gameTurnSuccess",waiter);
+        observer.addWaiter("gameTurnError",waiter);
+        observer.addWaiter("gameOver",waiter);
+        connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("startGame", tokens[0], "")
+                )
+        );
+        Thread.sleep(1000);
+        connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("gameTurn", playerToken[0], "plane")
+                )
+        );
+        Thread.sleep(2000);
+    }
+
+    @Test
+    public void testGameOverInMultiQueries() throws JsonProcessingException, InterruptedException {
+        final String[] playerToken = new String[1];
+        Waiter waiter = System.out::println;
+        Waiter waiter1 = packet -> playerToken[0] = packet.getToken();
+        observer.addWaiter("startTurn", waiter);
+        observer.addWaiter("gameOver", waiter);
+        observer.addWaiter("messageError", waiter);
+        observer.addWaiter("startGameSuccess", waiter1);
+        observer.addWaiter("startGameSuccess", waiter);
+
+        observer.addWaiter("gameTurnSuccess",waiter);
+        observer.addWaiter("gameTurnError",waiter);
+        observer.addWaiter("gameOver",waiter);
+        connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("startGame", tokens[0], "")
+                )
+        );
+        Thread.sleep(1000);
+        connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("gameTurn", playerToken[0], "p")
+                )
+        );connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("gameTurn", playerToken[0], "l")
+                )
+        );connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("gameTurn", playerToken[0], "a")
+                )
+        );connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("gameTurn", playerToken[0], "n")
+                )
+        );connector.send(
+                mapper.writeValueAsBytes(
+                        new Packet<>("gameTurn", playerToken[0], "e")
+                )
+        );
+        Thread.sleep(2000);
+    }
 }
