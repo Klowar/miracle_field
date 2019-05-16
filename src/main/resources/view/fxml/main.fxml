@@ -20,7 +20,7 @@
             </center>
             <right>
                 <StackPane styleClass="main_btns_pane">
-                    <Button text="Крутить барабан!" onMouseClicked="#spinRoulette" fx:id="spinRouletteButton"/>
+                    <Button text="Крутить барабан!" onMouseClicked="#spinRoulette" fx:id="spinRouletteButton" disable="true"/>
                 </StackPane>
             </right>
             <bottom>

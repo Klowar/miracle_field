@@ -14,16 +14,24 @@ import lombok.NoArgsConstructor;
 import miracle.field.client.gui.panes.AlphabetPane;
 import miracle.field.client.gui.panes.RoulettePane;
 import miracle.field.client.util.SpringStageLoader;
+import miracle.field.server.gameData.GameInfo;
+import miracle.field.server.gameData.MiracleFieldInfo;
+import miracle.field.server.handler.LoginHandler;
 import miracle.field.shared.packet.Packet;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 @Component
 @Data
 @NoArgsConstructor
 public class MainController extends AbstractFxmlController {
+    private final Logger LOGGER = Logger.getLogger(LoginHandler.class.getName());
     private final String CALL_WORD_STAGE_TITLE = "Назовите слово";
     @FXML
     private RoulettePane roulettePain;
@@ -42,26 +50,43 @@ public class MainController extends AbstractFxmlController {
                 removeWaiter("startGameError");
                 Platform.runLater(() -> {
                     waitDescription();
+                    waitstartTurn();
                 });
+
                 break;
             case "roomWordDescriptionSuccess":
                 removeWaiter("roomWordDescriptionSuccess");
                 removeWaiter("roomWordDescriptionError");
-
                 Platform.runLater(() -> {
                     wordDescriptionArea.setText(packet.getData());
                 });
                 break;
+            case "startTurn":
+                if(personalMap.get("token").equals(packet.getToken())) {
+                    spinRouletteButton.setDisable(false);
+                    System.out.println(packet.getData());
+                    try {
+                        MiracleFieldInfo info = (MiracleFieldInfo) packet.getData(MiracleFieldInfo.class);
+                        //TODO Merenaas
+                        System.out.println(info.getTurnScore());
+                    } catch (IOException e) {
+                        LOGGER.severe("Can not get game info from packet: " + packet);
+                    }
+                }
 
             default:
                 return;
         }
     }
 
+    private void waitstartTurn() {
+        sendPacket("gameTurn", (String) personalMap.get("token"), null);
+        addWaiter("startTurn");
+    }
+
     @FXML
     public void spinRoulette() {
-        roulettePain.spinRoulette();
-        spinRouletteButton.setDisable(true);
+            roulettePain.spinRoulette(15);
     }
 
     @FXML

@@ -14,12 +14,13 @@ import javafx.scene.text.TextBoundsType;
 import javafx.util.Duration;
 import lombok.Data;
 
+@Data
 public class RoulettePane extends Pane {
     private Ellipse centerOfRoulette;
-    private final int quantityOfSectors = 16;
+    private final int quantityOfSectors = 12;
     private Sector[] sectors;
     private Timeline timeline;
-    private final String[] textStrings = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"};
+    private final String[] textStrings = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
 
     public RoulettePane() {
         centerOfRoulette = new Ellipse(200, 200, 10, 10);
@@ -46,11 +47,12 @@ public class RoulettePane extends Pane {
         return sectors;
     }
 
-    public void spinRoulette() {
-        double milliseconds = 5 + Math.random() * 9;
+    public void spinRoulette(int count) {
+        double milliseconds = 3;
         timeline = new Timeline(new KeyFrame(Duration.millis(milliseconds), e -> spin()));
-        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.setCycleCount(360 + count);
         timeline.play();
+
     }
 
     private void spin() {

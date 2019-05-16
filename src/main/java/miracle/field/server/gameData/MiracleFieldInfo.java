@@ -1,13 +1,24 @@
 package miracle.field.server.gameData;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import miracle.field.shared.model.Word;
 
 import java.util.*;
 
-@ToString
+@Data
 public class MiracleFieldInfo extends GameInfo {
+
+    @JsonCreator
+    public MiracleFieldInfo(
+            @JsonProperty("openLetters") Set<Character> openLetters,
+            @JsonProperty("changeTurnScore") Long changeTurnScore){
+        this.openLetters = openLetters;
+        this.changeTurnScore = changeTurnScore;
+
+    }
 
     @JsonIgnore
     private Queue<Long> turnScore;
@@ -29,6 +40,8 @@ public class MiracleFieldInfo extends GameInfo {
     @JsonIgnore
     private String currentPlayer;
 
+    private Long changeTurnScore;
+
     public MiracleFieldInfo(Set<String> playersTokens) {
         final int MAX_TURN_AMOUNT = 32;
         playersScore = new HashMap<>();
@@ -37,7 +50,7 @@ public class MiracleFieldInfo extends GameInfo {
         for(String token : playersTokens)
             playersScore.put(token, 0L);
         for (int i = 0; i < MAX_TURN_AMOUNT; i++)
-            turnScore.add((long) ((Math.random() * 16) + 1));
+            turnScore.add((long) ((Math.random() * 12) + 1));
 
         this.winner = null;
         this.changeTurn = true;
@@ -96,8 +109,9 @@ public class MiracleFieldInfo extends GameInfo {
         this.currentPlayer = currentPlayer;
     }
 
+
     public Long getTurnScore() {
-        return turnScore.peek();
+        return changeTurnScore;
     }
 
     public Long getChangeTurnScore() {
