@@ -138,16 +138,6 @@ public class MainController extends AbstractFxmlController {
         }
     }
 
-
-    private void checkWord(String word, char[] openLetters){
-        for(int i = 0; i < openLetters.length; i++) {
-            if(word.indexOf(openLetters[i]) != -1){
-                //TODO open this char
-            }
-        }
-    }
-
-
     @FXML
     public void spinRoulette() {
         roulettePain.spinRoulette(score);

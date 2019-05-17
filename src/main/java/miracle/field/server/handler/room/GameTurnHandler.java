@@ -7,6 +7,7 @@ import miracle.field.shared.packet.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -32,6 +33,9 @@ public class GameTurnHandler extends BaseRoomHandler {
                 getUserRoomId(message.getToken())
         );
 
+        if (room == null)
+            return new Packet(type + "Error","","");
+
         Collection<String> users = room.getUsers();
 
         Packet returnPacket = null;
@@ -42,6 +46,7 @@ public class GameTurnHandler extends BaseRoomHandler {
 
             if (returnPacket.getType().equals("gameOver")) {
                 users = new ArrayList<>(room.getUsers());
+                removeUsersFromRoom(users);
                 room.clean();
             } else {
                 if (returnPacket.getToken().equals(type + "Error"))
@@ -70,8 +75,15 @@ public class GameTurnHandler extends BaseRoomHandler {
 
         } catch (JsonProcessingException e) {
             LOGGER.severe("CAN NOT TURN");
+        } catch (IOException e) {
+            LOGGER.severe("CAN NOT TURN");
         }
 
         return returnPacket;
+    }
+
+    private void removeUsersFromRoom(Collection<String> users) {
+        for (String token : users)
+            removeUserFromRoom(token);
     }
 }
