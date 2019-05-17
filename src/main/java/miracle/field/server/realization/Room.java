@@ -6,6 +6,7 @@ import miracle.field.server.gameData.MiracleFieldInfo;
 import miracle.field.server.service.GameService;
 import miracle.field.shared.packet.Packet;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -65,7 +66,7 @@ public class Room {
         return playerOrder;
     }
 
-    public Packet makeTurn(Packet packet) throws JsonProcessingException {
+    public Packet makeTurn(Packet packet) throws IOException {
 
         LOGGER.info("Got " + packet);
 
@@ -75,7 +76,7 @@ public class Room {
         gameService.gameMove(
                 gameInfo,
                 packet.getToken(),
-                packet.getData()
+                (String) packet.getData(String.class)
         );
 
         if (gameInfo.getCurrentPlayer().equals(gameInfo.getWinner())) {
