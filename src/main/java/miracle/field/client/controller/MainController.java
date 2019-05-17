@@ -106,6 +106,7 @@ public class MainController extends AbstractFxmlController {
         for (char temp : word.toCharArray()) {
             TextField wordLetter = new TextField();
             wordLetter.setDisable(true);
+            wordLetter.setStyle("-fx-min-width: 90;-fx-max-width: 90");
             if (packet.getOpenLetters().contains(temp)) {
                 wordLetter.setText(String.valueOf(temp));
             }

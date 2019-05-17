@@ -42,6 +42,6 @@
 }
 
 .securedWord{
-    -fx-font: 10px Tahoma;;
+    -fx-font: 20px Tahoma;;
     -fx-background-color: rgba(128, 128, 192, 0.9);
 }
