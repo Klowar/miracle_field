@@ -7,7 +7,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="miracle.field.client.controller.MainController" styleClass="main_background">
     <left>
-        <BorderPane styleClass="">
+        <BorderPane styleClass="" maxWidth="720">
             <left>
                 <StackPane styleClass="main_btns_pane">
                     <Button text="Назвать слово!" onAction="#openCallWordWindow"/>
@@ -54,7 +54,7 @@
             </center>
             <bottom>
                 <FlowPane>
-                    <TextField fx:id="newMessage"/>
+                    <TextField fx:id="newMessage" minWidth="449"/>
                     <Button onAction="#sendMessage" text="Отправить"/>
                 </FlowPane>
             </bottom>

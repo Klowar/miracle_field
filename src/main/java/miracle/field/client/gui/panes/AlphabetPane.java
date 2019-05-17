@@ -17,6 +17,7 @@ public class AlphabetPane extends FlowPane {
         for(int i = 0;  i < ALPHABET_SIZE; i++) {
             Button button = new Button();
             button.setText(String.valueOf((char)code));
+            button.setStyle(" -fx-text-fill:white; -fx-min-width:45;  -fx-max-width:45;");
             getChildren().add(button);
             code++;
         }
